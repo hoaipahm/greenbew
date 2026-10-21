@@ -52,6 +52,10 @@ window.HoaiLanguage = (() => {
     'ISOLATED // CÔ LẬP': 'ISOLATED // ALONE',
     'DIE ? // MẤT KẾT NỐI': 'DIE ? // DISCONNECTED',
     'SILENT // IM LẶNG': 'SILENT // STILL',
+    'TỈNH TÁO': 'AWAKE',
+    'CÔ LẬP': 'ALONE',
+    'MẤT KẾT NỐI': 'DISCONNECTED',
+    'IM LẶNG': 'STILL',
     'Phong cách thẻ bài': 'Post card style',
     "Đen Lục Bảo (No, I'm Not Human)": "Emerald darkness (No, I'm Not Human)",
     'Giấy Cũ Đóng Dấu Đỏ (14 Lies)': 'Aged paper, red stamp (14 Lies)',
@@ -209,7 +213,7 @@ window.HoaiLanguage = (() => {
     'Không tải được Supabase SDK. Hãy kiểm tra mạng rồi tải lại trang.': 'Could not load the Supabase SDK. Check your connection and reload.',
     'Trình duyệt chưa hỗ trợ bộ phát âm thanh này.': 'This browser does not support this audio player.'
   };
-  const excluded = 'script,style,svg,[data-no-translate],#hoaiBio,.post-title,.post-excerpt,.post-meta,.mood-tag,.gallery-caption>span,#modalContentArea,input,textarea';
+  const excluded = 'script,style,svg,[data-no-translate],#hoaiBio,.post-title,.post-excerpt,.gallery-caption>span,.reader-title,.reader-body,input,textarea';
   const originals = new WeakMap();
   const attributes = new WeakMap();
   let language = 'vi';
@@ -227,7 +231,10 @@ window.HoaiLanguage = (() => {
       if (key.startsWith(vi)) return en + translate(key.slice(vi.length));
     }
     // Only known status formats, never arbitrary user content.
-    return value.replace(/(\d+ \/ \d+) bài viết/g, '$1 posts')
+    return value.replace(/\[([^\]]+)\]/g, (match, category) => entries[category] ? `[${entries[category]}]` : match)
+      .replace(/^HỒ SƠ #/g, 'FILE #')
+      .replace(/ \/\/ ([^/]+?)(?= \/\/|$)/g, (match, label) => entries[label.trim()] ? ` // ${entries[label.trim()]}` : match)
+      .replace(/(\d+ \/ \d+) bài viết/g, '$1 posts')
       .replace(/NỀN ĐANG TẮT/g, 'SYNTH OFF').replace(/NỀN ĐANG PHÁT/g, 'SYNTH ON')
       .replace(/GIỜ ĐỊA PHƯƠNG:/g, 'LOCAL TIME:')
       .replace(/Đã lưu trên Supabase/g, 'Saved to Supabase')

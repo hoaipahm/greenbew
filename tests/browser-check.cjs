@@ -302,6 +302,16 @@ function check(name, actual, expected) {
   await evaluate('document.querySelector("[data-language=en]").click()');
   check('English switch translates navigation, forms and radio', await evaluate('[document.documentElement.lang,document.querySelector(".nav-btn").textContent,$("ownerLoginTitle").textContent,$("postTitleInput").placeholder,$("btnFrequencyToggle").textContent]'), ['en','01. SANCTUARY','OWNER LOGIN','Example: Night 14 — Only the radio remains...','ENABLE SYNTH']);
   check('language switch preserves user biography and post titles', await evaluate('[$("hoaiBio").textContent,document.querySelector(".post-title").textContent]'), [originalBio, originalTitle]);
+  check('post mood and category labels translate together', await evaluate('[...document.querySelectorAll(".mood-tag,.post-meta")].every(e=>!/[À-ỹ]/.test(e.textContent))'), true);
+  await evaluate('openReader("post-2")');
+  check('reader file heading and mood use English', await evaluate('[...document.querySelectorAll("#modalContentArea .helper-text")].map(e=>e.textContent)'), ['FILE #14 // CLASSIFIED FILES // 20/10/2026 - 23:40', 'HOÀI // ISOLATED // ALONE']);
+  await evaluate('HoaiLanguage.set("vi")');
+  check('open reader switches back to Vietnamese without closing', await evaluate('$("readerModal").classList.contains("open") && $("modalContentArea").querySelector(".helper-text").textContent.startsWith("HỒ SƠ #14 // HỒ SƠ MẬT")'), true);
+  await evaluate('HoaiLanguage.set("en")');
+  check('open reader switches back to English without closing', await evaluate('$("readerModal").classList.contains("open") && $("modalContentArea").querySelector(".helper-text").textContent.startsWith("FILE #14 // CLASSIFIED FILES")'), true);
+  await evaluate('closeReader();openReader("post-3")');
+  check('newly opened reader uses current language', await evaluate('$("modalContentArea").querySelector(".helper-text").textContent.startsWith("FILE #03 // SOLITARY NOTES")'), true);
+  await evaluate('closeReader()');
   await evaluate('showToast("Đã lưu bài và ảnh lên Supabase.");updateMusicUI();renderPosts()');
   check('dynamic messages and newly rendered controls use English', await evaluate('[$("toastBox").textContent,$("btnRadioToggle").textContent,document.querySelector(".post-footer button").textContent]'), ['Post and images saved to Supabase.','▶ PLAY MUSIC','READ FILE →']);
   for (const width of [320,375,768,1280]) {
