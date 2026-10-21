@@ -264,7 +264,8 @@ window.HoaiLanguage = (() => {
     'Chưa lưu được lịch. Nội dung vẫn được giữ; kiểm tra thông báo rồi thử lại.': 'Could not save the schedule. Your text is preserved; check the notification and retry.',
     'Lịch mặc định đang phát. Để lưu lịch riêng, chạy supabase/broadcast.sql trong Supabase → SQL Editor.': 'The default schedule is playing. To save custom slots, run supabase/broadcast.sql in Supabase → SQL Editor.',
     'Để lưu lịch riêng, chạy supabase/broadcast.sql trong Supabase → SQL Editor.': 'To save custom slots, run supabase/broadcast.sql in Supabase → SQL Editor.',
-    'Đang lưu lịch phát. Hãy chờ hoàn tất.': 'Saving the broadcast schedule. Please wait.'
+    'Đang lưu lịch phát. Hãy chờ hoàn tất.': 'Saving the broadcast schedule. Please wait.',
+    'CHỌN ẢNH CAMERA': 'CHOOSE CAMERA IMAGE'
   };
   const excluded = 'script,style,svg,[data-no-translate],#hoaiBio,.post-title,.post-excerpt,.reader-title:not([data-gallery-label]),.reader-body,input,textarea';
   const originals = new WeakMap();

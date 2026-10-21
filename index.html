@@ -856,7 +856,7 @@
       }
     }
   </style>
-  <link rel="stylesheet" href="enhancements.css">
+  <link rel="stylesheet" href="enhancements.css?v=0ca457a48621">
 </head>
 <body>
 
@@ -1148,6 +1148,7 @@
           <div class="camera-location" id="cameraLocation">Căn phòng im lặng</div>
         </div>
         <div class="camera-controls"><span>QUAN SÁT / CHỜ TÍN HIỆU</span><button type="button" class="btn-sm" onclick="HoaiSurveillance.next()">ĐỔI CAMERA →</button></div>
+        <label class="camera-picker" for="cameraSelect"><span>CHỌN ẢNH CAMERA</span><select id="cameraSelect" class="form-select" data-no-translate onchange="HoaiSurveillance.select(Number(this.value))"></select></label>
         <div class="broadcast-banner" data-no-translate>
           <div class="broadcast-meta"><span id="broadcastTime"></span><span>UTC+7 // VIETNAM</span></div>
           <h4 id="broadcastHeadline"></h4>
@@ -1238,16 +1239,16 @@
   <!-- TOAST -->
   <div class="toast" id="toastBox" role="status" aria-live="polite">Đã lưu vào lãnh địa của Hoài!</div>
 
-  <script src="i18n.js"></script>
-  <script src="broadcast.js"></script>
-  <script src="supabase-config.js"></script>
-  <script src="supabase-client.js"></script>
-  <script src="ui-sounds.js"></script>
-  <script src="access.js"></script>
-  <script src="data/site-data.js"></script>
-  <script src="radio.js"></script>
-  <script src="gallery-editor.js"></script>
-  <script src="app.js"></script>
-  <script src="surveillance.js"></script>
+  <script src="i18n.js?v=ae99145cf8ee"></script>
+  <script src="broadcast.js?v=b97253a968cf"></script>
+  <script src="supabase-config.js?v=a8357c242079"></script>
+  <script src="supabase-client.js?v=70690cdce78f"></script>
+  <script src="ui-sounds.js?v=72ec9213f8ea"></script>
+  <script src="access.js?v=4cb7ec836b87"></script>
+  <script src="data/site-data.js?v=7a8503563a66"></script>
+  <script src="radio.js?v=954e9f5872d6"></script>
+  <script src="gallery-editor.js?v=1679a82ae4d2"></script>
+  <script src="app.js?v=da30b6e77d3a"></script>
+  <script src="surveillance.js?v=ee087e3ec8a1"></script>
 </body>
 </html>

@@ -181,6 +181,10 @@ function check(name, actual, expected) {
   check('daily schedule covers all twelve two-hour slots', await evaluate('[...$("signalLog").querySelectorAll("time")].map(t=>t.textContent).join("|")'), Array.from({length:12},(_,i)=>`${String(i*2).padStart(2,'0')}:00 – ${String(i*2+2).padStart(2,'0')}:00`).join('|'));
   await evaluate('HoaiLanguage.set("vi");for(let i=0;i<HoaiSurveillance.cameraCount-1;i++)HoaiSurveillance.next()');
   check('camera cycles through every unique image including post images', await evaluate('[$("cameraNumber").textContent,HoaiSurveillance.cameraCount]'), ['CAM 01 / 17',17]);
+  check('camera picker lists all unique images', await evaluate('$("cameraSelect").options.length'), 17);
+  await evaluate('$("cameraSelect").value="16";$("cameraSelect").dispatchEvent(new Event("change",{bubbles:true}))');
+  check('camera picker can reach image beyond the original four', await evaluate('[$("cameraNumber").textContent,$("cameraImage").getAttribute("src")]'), ['CAM 17 / 17','assets/original-3.jpg']);
+  await evaluate('HoaiSurveillance.select(0)');
   await evaluate('HoaiSurveillance.edit(0)');
   check('visitors cannot open broadcast editor', await evaluate('!$("broadcastEditDialog").open'), true);
   check('broadcast changes automatically on Vietnam two-hour boundary', await evaluate('(()=>{HoaiSurveillance.tick(new Date("2026-10-21T19:00:00Z"));return [$("broadcastTime").textContent,$("broadcastHeadline").textContent]})()'), ['02:00 – 04:00','Tiếng gõ trong sương']);

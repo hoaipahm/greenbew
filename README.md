@@ -103,6 +103,8 @@ Repository: https://github.com/hoaipahm/greenbew — Website: https://hoaipahm.g
 
 Sau khi thay mã giao diện, commit và push lên `main` để Pages cập nhật. Bài/ảnh lưu qua website được cập nhật trên Supabase, không cần push lại. Muốn quay về bản mã trước, dùng `git revert` commit tương ứng và push; thao tác này không khôi phục dữ liệu Supabase.
 
+Trước khi commit thay đổi JavaScript/CSS, chạy `python scripts/version-assets.py` để đồng bộ mã phiên bản theo nội dung tệp vào `index.html`. Kiểm tra bằng `python scripts/version-assets.py --check`. Việc này tránh trình duyệt dùng HTML mới cùng mã camera/ngôn ngữ cũ từ bộ nhớ đệm.
+
 Chỉ để Project URL và publishable/anon key trong cấu hình Web. Không đưa service_role, sb_secret_, access token hoặc mật khẩu database vào frontend/repository.
 
 ## Kiểm tra

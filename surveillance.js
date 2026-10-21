@@ -26,6 +26,12 @@ window.HoaiSurveillance = (() => {
     cameras = [...images.values()];
     const index = cameras.findIndex(image => image.src === selected);
     camera = index >= 0 ? index : 0;
+    $el('cameraSelect').replaceChildren(...cameras.map((image, index) => {
+      const option = document.createElement('option');
+      option.value = index;
+      option.textContent = `${String(index + 1).padStart(2,'0')} / ${String(cameras.length).padStart(2,'0')} — ${image.title}`;
+      return option;
+    }));
   }
 
   function paintCamera() {
@@ -36,6 +42,7 @@ window.HoaiSurveillance = (() => {
     $el('cameraImage').alt = selected.title;
     $el('cameraLocation').textContent = selected.title;
     $el('cameraNumber').textContent = `CAM ${String(camera + 1).padStart(2,'0')} / ${String(cameras.length).padStart(2,'0')}`;
+    $el('cameraSelect').value = String(camera);
   }
 
   function paintTimeline(date, force = false) {
@@ -84,7 +91,12 @@ window.HoaiSurveillance = (() => {
 
   function next() {
     if (!cameras.length) return;
-    camera = (camera + 1) % cameras.length;
+    select((camera + 1) % cameras.length);
+  }
+
+  function select(index) {
+    if (!Number.isInteger(index) || index < 0 || index >= cameras.length) return;
+    camera = index;
     lastSwitch = Date.now();
     paintCamera();
   }
@@ -170,5 +182,5 @@ window.HoaiSurveillance = (() => {
   paintCamera();
   tick();
   timer = setInterval(tick, 1000);
-  return { next, tick, edit, save, changeEditorHour, closeEditor, get cameraCount() { return cameras.length; } };
+  return { next, select, tick, edit, save, changeEditorHour, closeEditor, get cameraCount() { return cameras.length; } };
 })();

@@ -138,6 +138,8 @@ body.modal-open { overflow: hidden; }
 .camera-hud { position: absolute; z-index: 1; inset: 1rem 1rem auto; display: flex; justify-content: space-between; font-size: .7rem; color: #a1ffd4; text-shadow: 0 0 8px #00ff9d; }
 .camera-location { position: absolute; z-index: 1; bottom: 1rem; left: 1rem; right: 1rem; font-size: .8rem; color: #d2ffeb; }
 .camera-controls { font-size: .55rem; letter-spacing: 1px; color: #78a995; }
+.camera-picker { display: grid; gap: .5rem; margin-top: .85rem; font-size: .6rem; letter-spacing: 1px; color: #78a995; }
+.camera-picker select { width: 100%; min-width: 0; min-height: 44px; font-size: .7rem; }
 .transmission-quote { margin: 1.25rem 0; padding: .9rem 1rem; border-left: 2px solid #a83a39; color: #b5dbca; font-size: .8rem; line-height: 1.8; background: #08201666; }
 .signal-heading { border-top: 1px solid #1d503c; padding-top: 1rem; font-size: .65rem; color: var(--emerald); letter-spacing: 2px; }
 .signal-log { list-style: none; padding: 0; margin: .75rem 0 0; min-height: 9rem; }
