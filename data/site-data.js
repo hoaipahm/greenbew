@@ -76,7 +76,7 @@ window.HOAI_INITIAL_DATA = {
     },
     {
       "id": "provided-1",
-      "title": "Phòng chờ phát sóng",
+      "title": "Buổi Tế Lễ",
       "src": "assets/broadcast-waiting-room.png"
     },
     {
@@ -96,7 +96,7 @@ window.HOAI_INITIAL_DATA = {
     },
     {
       "id": "provided-5",
-      "title": "Người gác đêm",
+      "title": "Tổ chức FEMA",
       "src": "assets/hazmat-night.png"
     },
     {

@@ -33,7 +33,7 @@ Artwork and soundtrack are third-party media used in this personal project; thei
 
 ## Ngôn ngữ giao diện
 
-Nút **VI / EN** ở góc phải chuyển giao diện giữa tiếng Việt và tiếng Anh, không tải lại trang hoặc ngắt nhạc. Lựa chọn được lưu trên trình duyệt. Bài viết, lời tự bạch, tiêu đề và chú thích ảnh do chủ nhân nhập giữ nguyên ngôn ngữ gốc; nội dung và bản nháp không bị sửa khi chuyển ngôn ngữ. Bản dịch giao diện nằm trong `i18n.js`.
+Nút **VI / EN** ở góc phải chuyển giao diện, nhãn bài và chú thích ảnh có sẵn giữa tiếng Việt và tiếng Anh, không tải lại trang hoặc ngắt nhạc. Lựa chọn được lưu trên trình duyệt. Nội dung và bản nháp không bị sửa khi chuyển ngôn ngữ. Bản dịch nằm trong `i18n.js`; ảnh có tên tùy chỉnh mới cần bổ sung bản dịch ở đây. Hai chú thích cũ trong snapshot được đổi thành **Buổi Tế Lễ / The Ritual** và **Tổ chức FEMA / FEMA Organization** khi tải dữ liệu.
 
 Trang nhật ký, kho ảnh và đài âm nhạc cá nhân. Giao diện chạy trên GitHub Pages, backend mới dùng Supabase để mọi người xem và chỉ chủ nhân chỉnh sửa.
 

@@ -1,6 +1,6 @@
 'use strict';
 
-// Interface copy only: posts, captions, biography and input values are never translated.
+// Translate interface and known gallery captions without changing stored content.
 window.HoaiLanguage = (() => {
   const entries = {
     '01. CÕI RIÊNG': '01. SANCTUARY',
@@ -211,9 +211,18 @@ window.HoaiLanguage = (() => {
     'Bộ nhớ không khả dụng. Hãy sao lưu dữ liệu.': 'Storage is unavailable. Back up your data.',
     'Đã đăng nhập. Sao chép UID ở thanh trên để gán quyền chủ nhân theo hướng dẫn.': 'Signed in. Copy the UID above to assign owner access using the setup guide.',
     'Không tải được Supabase SDK. Hãy kiểm tra mạng rồi tải lại trang.': 'Could not load the Supabase SDK. Check your connection and reload.',
-    'Trình duyệt chưa hỗ trợ bộ phát âm thanh này.': 'This browser does not support this audio player.'
+    'Trình duyệt chưa hỗ trợ bộ phát âm thanh này.': 'This browser does not support this audio player.',
+    'Chân dung Chủ nhân Hoài': 'Portrait of Hoài',
+    'Đêm vùng tro tàn': 'Night in the Ashlands',
+    'Bóng hình thành phố': 'Shadows of the City',
+    'Bốn gương mặt than củi': 'Four Charcoal Faces',
+    'Dưới làn nước xanh': 'Beneath the Blue Water',
+    'Buổi Tế Lễ': 'The Ritual',
+    'Tổ chức FEMA': 'FEMA Organization',
+    'Vị khách ngoài cửa': 'The Visitor at the Door',
+    'Căn phòng im lặng': 'The Silent Room'
   };
-  const excluded = 'script,style,svg,[data-no-translate],#hoaiBio,.post-title,.post-excerpt,.gallery-caption>span,.reader-title,.reader-body,input,textarea';
+  const excluded = 'script,style,svg,[data-no-translate],#hoaiBio,.post-title,.post-excerpt,.reader-title:not([data-gallery-label]),.reader-body,input,textarea';
   const originals = new WeakMap();
   const attributes = new WeakMap();
   let language = 'vi';
@@ -223,6 +232,7 @@ window.HoaiLanguage = (() => {
     if (language !== 'en') return value;
     const key = value.trim();
     if (entries[key]) return value.replace(key, entries[key]);
+    if (key.startsWith('Xem ')) return 'View ' + translate(key.slice(4));
     const importPrompt = key.match(/^Thay (.+) bằng (\d+) bài viết và (\d+) ảnh\? Nên xuất sao lưu hiện tại trước\.$/);
     if (importPrompt) return `Replace ${destination(importPrompt[1])} with ${importPrompt[2]} posts and ${importPrompt[3]} images? Export a backup first.`;
     const restorePrompt = key.match(/^Thay (.+) bằng bản trong repository\? Hãy xuất sao lưu hiện tại trước\.$/);
@@ -265,7 +275,7 @@ window.HoaiLanguage = (() => {
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
     while (walker.nextNode()) paintNode(walker.currentNode);
     for (const element of [root, ...root.querySelectorAll('[placeholder],[aria-label],[title],[alt]')]) {
-      if (element.closest('script,style,svg,[data-no-translate],#modalContentArea,.post-card,.gallery-item')) continue;
+      if (!element.hasAttribute('data-gallery-label') && element.closest('script,style,svg,[data-no-translate],#modalContentArea,.post-card,.gallery-item')) continue;
       const saved = attributes.get(element) || {};
       for (const name of ['placeholder', 'aria-label', 'title', 'alt']) {
         if (!element.hasAttribute(name)) continue;

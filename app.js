@@ -36,6 +36,14 @@ function safeImage(value) {
   );
 }
 
+function canonicalGalleryTitle(image) {
+  // Upgrade the two original captions when loading older cloud/local snapshots.
+  // Preserve captions the owner has since customized.
+  if (image.id === 'provided-1' && image.title === 'Phòng chờ phát sóng') return 'Buổi Tế Lễ';
+  if (image.id === 'provided-5' && image.title === 'Người gác đêm') return 'Tổ chức FEMA';
+  return image.title;
+}
+
 function validateState(value) {
   if (!value || typeof value !== 'object' || !Array.isArray(value.posts) || !Array.isArray(value.gallery)) {
     throw new Error('Bản sao lưu phải có danh sách bài viết và ảnh.');
@@ -69,7 +77,7 @@ function validateState(value) {
       id: post.id, stamp: String(post.stamp ?? ''), title: post.title, category: post.category,
       mood: post.mood, style: post.style, date: post.date, image: post.image, content: post.content
     })),
-    gallery: value.gallery.map(image => ({ id: image.id, title: image.title, src: image.src })),
+    gallery: value.gallery.map(image => ({ id: image.id, title: canonicalGalleryTitle(image), src: image.src })),
     revision: typeof value.revision === 'string' ? value.revision : 'legacy'
   };
 }
@@ -421,8 +429,8 @@ function renderPosts() {
 function renderGallery() {
   $('galleryContainer').innerHTML = appState.gallery.length ? appState.gallery.map(image => `
     <div class="gallery-item">
-      <button class="gallery-open" onclick="viewGalleryImage('${image.id}')" aria-label="Xem ${escapeHtml(image.title)}">
-        <img src="${escapeHtml(image.src)}" alt="${escapeHtml(image.title)}" loading="lazy"></button>
+      <button class="gallery-open" data-gallery-label onclick="viewGalleryImage('${image.id}')" aria-label="Xem ${escapeHtml(image.title)}">
+        <img data-gallery-label src="${escapeHtml(image.src)}" alt="${escapeHtml(image.title)}" loading="lazy"></button>
       <div class="gallery-caption"><span>${escapeHtml(image.title)}</span>
         <button data-owner ${canEdit() ? '' : 'hidden'} class="btn-sm btn-danger-sm" onclick="deleteGalleryItem('${image.id}')">Xóa</button></div>
     </div>`).join('') : '<div class="empty-state">Kho ảnh đang trống. Thêm ảnh để giữ lại một khoảnh khắc.</div>';
@@ -450,8 +458,8 @@ function openReader(id) {
 function viewGalleryImage(id) {
   const image = appState.gallery.find(item => item.id === id);
   if (!image) return;
-  showReader(`<h2 class="reader-title">${escapeHtml(image.title)}</h2>
-    <img class="reader-image" src="${escapeHtml(image.src)}" alt="${escapeHtml(image.title)}">`);
+  showReader(`<h2 class="reader-title" data-gallery-label>${escapeHtml(image.title)}</h2>
+    <img class="reader-image" data-gallery-label src="${escapeHtml(image.src)}" alt="${escapeHtml(image.title)}">`);
 }
 
 function closeReader() {

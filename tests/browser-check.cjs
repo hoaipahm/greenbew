@@ -155,6 +155,16 @@ function check(name, actual, expected) {
   await wait(100);
   check('pause is not undone by later page interactions', await evaluate('$("soundtrack").paused && musicUserPaused && !musicAutoPending'), true);
   check('initial posts and all 8 provided images', await evaluate('[appState.posts.length, appState.gallery.length, appState.gallery.filter(i=>i.id.startsWith("provided-")).length]'), [4, 13, 8]);
+  check('legacy cloud and local gallery captions receive corrected names', await evaluate(`(() => {
+    const old = structuredClone(appState);
+    old.gallery.find(i=>i.id==='provided-1').title='Phòng chờ phát sóng';
+    old.gallery.find(i=>i.id==='provided-5').title='Người gác đêm';
+    const corrected = validateState(old);
+    return corrected.gallery.find(i=>i.id==='provided-1').title==='Buổi Tế Lễ'
+      && corrected.gallery.find(i=>i.id==='provided-5').title==='Tổ chức FEMA'
+      && old.gallery.find(i=>i.id==='provided-1').title==='Phòng chờ phát sóng';
+  })()`), true);
+  check('caption migration preserves custom titles', await evaluate('canonicalGalleryTitle({id:"provided-1",title:"Tên tôi tự đặt"})'), 'Tên tôi tự đặt');
   check('social logos open the supplied Facebook and Discord links safely in new tabs', await evaluate(`(() => {
     const links=[...document.querySelectorAll('.social-link')];
     return links.map(a=>a.href).join('|')==='https://www.facebook.com/edzorc|https://discord.com/invite/qPDtERBV'
@@ -302,6 +312,18 @@ function check(name, actual, expected) {
   await evaluate('document.querySelector("[data-language=en]").click()');
   check('English switch translates navigation, forms and radio', await evaluate('[document.documentElement.lang,document.querySelector(".nav-btn").textContent,$("ownerLoginTitle").textContent,$("postTitleInput").placeholder,$("btnFrequencyToggle").textContent]'), ['en','01. SANCTUARY','OWNER LOGIN','Example: Night 14 — Only the radio remains...','ENABLE SYNTH']);
   check('language switch preserves user biography and post titles', await evaluate('[$("hoaiBio").textContent,document.querySelector(".post-title").textContent]'), [originalBio, originalTitle]);
+  const gallerySnapshot = await evaluate('JSON.stringify(appState.gallery)');
+  check('all original Vietnamese gallery captions have English display names', await evaluate('[...document.querySelectorAll(".gallery-caption>span")].map(e=>e.textContent).filter(s=>["Portrait of Hoài","Night in the Ashlands","Shadows of the City","Four Charcoal Faces","Beneath the Blue Water","The Ritual","FEMA Organization","The Visitor at the Door","The Silent Room"].includes(s)).length'), 9);
+  await evaluate('viewGalleryImage("provided-1")');
+  check('ritual lightbox title and image alt both use English', await evaluate('[$("modalContentArea").querySelector("h2").textContent,$("modalContentArea").querySelector("img").alt]'), ['The Ritual','The Ritual']);
+  await evaluate('HoaiLanguage.set("vi")');
+  check('open ritual lightbox switches back to corrected Vietnamese caption', await evaluate('[$("modalContentArea").querySelector("h2").textContent,$("modalContentArea").querySelector("img").alt]'), ['Buổi Tế Lễ','Buổi Tế Lễ']);
+  await evaluate('closeReader();viewGalleryImage("provided-5");HoaiLanguage.set("en")');
+  check('FEMA lightbox switches to English while open', await evaluate('[$("modalContentArea").querySelector("h2").textContent,$("modalContentArea").querySelector("img").alt]'), ['FEMA Organization','FEMA Organization']);
+  check('gallery accessibility labels follow selected language', await evaluate('[...document.querySelectorAll(".gallery-open")].find(e=>e.getAttribute("onclick").includes("provided-5")).getAttribute("aria-label")'), 'View FEMA Organization');
+  check('language switching leaves stored gallery captions intact', await evaluate('JSON.stringify(appState.gallery)'), gallerySnapshot);
+  await evaluate('closeReader();renderGallery()');
+  check('gallery re-render uses current language', await evaluate('[...document.querySelectorAll(".gallery-open")].find(e=>e.getAttribute("onclick").includes("provided-1")).parentElement.querySelector(".gallery-caption>span").textContent'), 'The Ritual');
   check('post mood and category labels translate together', await evaluate('[...document.querySelectorAll(".mood-tag,.post-meta")].every(e=>!/[À-ỹ]/.test(e.textContent))'), true);
   await evaluate('openReader("post-2")');
   check('reader file heading and mood use English', await evaluate('[...document.querySelectorAll("#modalContentArea .helper-text")].map(e=>e.textContent)'), ['FILE #14 // CLASSIFIED FILES // 20/10/2026 - 23:40', 'HOÀI // ISOLATED // ALONE']);
