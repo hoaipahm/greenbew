@@ -1,0 +1,58 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isOwner() {
+      // Replace with the same Firebase Authentication UID as firebase-config.js.
+      return request.auth != null && request.auth.uid == 'PE3Kk3y0LERkrYtSaxCaBDzGec72';
+    }
+    function validImage(value) { return value is string && value.size() <= 4096; }
+    function validPost() {
+      let post = request.resource.data;
+      return post.keys().hasOnly(['id', 'stamp', 'title', 'category', 'mood', 'style', 'date', 'image', 'content'])
+        && post.keys().hasAll(['id', 'stamp', 'title', 'category', 'mood', 'style', 'date', 'image', 'content'])
+        && post.id is string && post.stamp is string
+        && post.title is string && post.title.size() > 0 && post.title.size() <= 500
+        && post.category is string && post.category.size() <= 100
+        && post.mood is string && post.mood.size() <= 100
+        && post.style in ['dark', 'kraft']
+        && post.date is string && post.date.size() <= 100
+        && validImage(post.image)
+        && post.content is string && post.content.size() > 0 && post.content.size() <= 300000;
+    }
+    match /posts/{id} {
+      allow read: if true;
+      allow create, update: if isOwner() && validPost() && request.resource.data.id == id;
+      allow delete: if isOwner();
+    }
+    match /gallery/{id} {
+      allow read: if true;
+      allow create, update: if isOwner()
+        && request.resource.data.keys().hasOnly(['id', 'title', 'src'])
+        && request.resource.data.keys().hasAll(['id', 'title', 'src'])
+        && request.resource.data.id == id
+        && request.resource.data.title is string && request.resource.data.title.size() <= 500
+        && validImage(request.resource.data.src);
+      allow delete: if isOwner();
+    }
+    match /site/profile {
+      allow get: if true;
+      allow create, update: if isOwner()
+        && request.resource.data.keys().hasOnly(['avatar', 'bio', 'lifeState'])
+        && request.resource.data.keys().hasAll(['avatar', 'bio', 'lifeState'])
+        && validImage(request.resource.data.avatar)
+        && request.resource.data.bio is string && request.resource.data.bio.size() <= 10000
+        && request.resource.data.lifeState in ['ALIVE', 'DIE'];
+    }
+    match /site/meta {
+      allow get: if true;
+      allow create, update: if isOwner()
+        && request.resource.data.keys().hasOnly(['revision', 'postsOrder', 'galleryOrder', 'updatedAt'])
+        && request.resource.data.keys().hasAll(['revision', 'postsOrder', 'galleryOrder', 'updatedAt'])
+        && request.resource.data.revision is string && request.resource.data.revision.size() <= 100
+        && request.resource.data.postsOrder is list && request.resource.data.postsOrder.size() <= 10000
+        && request.resource.data.galleryOrder is list && request.resource.data.galleryOrder.size() <= 10000
+        && request.resource.data.updatedAt == request.time;
+    }
+    match /{document=**} { allow read, write: if false; }
+  }
+}

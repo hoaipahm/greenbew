@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Hoài’s personal sanctuary — a Vietnamese/English journal, image vault and late-night radio wrapped in an emerald CRT horror interface." />
+  <title>NO, ONLY HOAI HERE — alive or die ?</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Creepster&family=JetBrains+Mono:ital,wght@0,300;0,400;0,700;0,800;1,400&family=Special+Elite&family=VT323&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-void: #030705;
+      --bg-panel: #07110d;
+      --bg-card: #0a1813;
+      --emerald: #00ff9d;
+      --emerald-dim: #008f58;
+      --emerald-glow: rgba(0, 255, 157, 0.35);
+      --crimson: #d92626;
+      --crimson-glow: rgba(217, 38, 38, 0.45);
+      --kraft: #d8c39e;
+      --kraft-dark: #b89f74;
+      --text-main: #d5f5e8;
+      --text-muted: #6b9c87;
+      --border-line: #143829;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-void);
+      color: var(--text-main);
+      font-family: 'JetBrains Mono', monospace;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+      line-height: 1.6;
+    }
+
+    /* CRT Scanlines & Vignette Overlay */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(circle at 50% 50%, transparent 55%, rgba(0, 0, 0, 0.82) 100%),
+        repeating-linear-gradient(
+          0deg,
+          rgba(0, 255, 157, 0.03) 0px,
+          rgba(0, 255, 157, 0.03) 1px,
+          transparent 1px,
+          transparent 3px
+        );
+      pointer-events: none;
+      z-index: 9998;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #020504;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--emerald-dim);
+      border: 1px solid var(--emerald);
+    }
+
+    /* Top Status Bar */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(3, 8, 6, 0.94);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--emerald-dim);
+      padding: 0.65rem 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      box-shadow: 0 4px 25px rgba(0, 255, 157, 0.08);
+    }
+
+    .brand-box {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .status-dot {
+      width: 11px;
+      height: 11px;
+      background: var(--emerald);
+      border-radius: 50%;
+      box-shadow: 0 0 12px var(--emerald);
+      animation: pulseDot 2s infinite;
+    }
+
+    .status-dot.die-mode {
+      background: var(--crimson);
+      box-shadow: 0 0 12px var(--crimson);
+    }
+
+    @keyframes pulseDot {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.3); opacity: 0.45; }
+    }
+
+    .brand-title {
+      font-family: 'VT323', monospace;
+      font-size: 1.65rem;
+      letter-spacing: 2px;
+      color: var(--emerald);
+      text-shadow: 0 0 10px var(--emerald-glow);
+      text-transform: uppercase;
+    }
+
+    .brand-sub {
+      font-size: 0.75rem;
+      color: var(--crimson);
+      background: rgba(217, 38, 38, 0.12);
+      border: 1px solid var(--crimson);
+      padding: 0.15rem 0.5rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .nav-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      align-items: center;
+    }
+
+    .nav-btn {
+      background: transparent;
+      color: var(--text-main);
+      border: 1px solid var(--border-line);
+      padding: 0.45rem 0.85rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .nav-btn:hover, .nav-btn.active {
+      background: rgba(0, 255, 157, 0.14);
+      border-color: var(--emerald);
+      color: var(--emerald);
+      box-shadow: 0 0 12px var(--emerald-glow);
+    }
+
+    .write-cta-btn {
+      background: var(--emerald);
+      color: #020805;
+      border: 1px solid var(--emerald);
+      padding: 0.48rem 1rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      font-weight: 800;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      box-shadow: 0 0 15px var(--emerald-glow);
+      transition: all 0.2s ease;
+    }
+
+    .write-cta-btn:hover {
+      background: #ffffff;
+      box-shadow: 0 0 22px var(--emerald);
+      transform: translateY(-1px);
+    }
+
+    /* Layout Container */
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 1.8rem 1.25rem 4rem;
+    }
+
+    /* Hero Sanctuary Section */
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 1.8rem;
+      background: linear-gradient(145deg, rgba(8, 22, 16, 0.92), rgba(3, 8, 6, 0.96));
+      border: 1px solid var(--emerald-dim);
+      padding: 1.75rem;
+      position: relative;
+      box-shadow: 0 0 40px rgba(0, 255, 157, 0.07);
+      margin-bottom: 2.2rem;
+    }
+
+    .hero-grid::after {
+      content: "SANCTUARY // ONLY_HOAI_ACCESS";
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      letter-spacing: 2px;
+    }
+
+    .avatar-frame {
+      position: relative;
+      border: 2px solid var(--emerald);
+      background: #000;
+      overflow: hidden;
+      aspect-ratio: 1 / 1.02;
+      box-shadow: 0 0 28px rgba(0, 255, 157, 0.25);
+    }
+
+    .avatar-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: contrast(1.12) saturate(1.08);
+      transition: transform 0.5s ease, filter 0.3s ease;
+    }
+
+    .avatar-frame:hover img {
+      transform: scale(1.04);
+      filter: contrast(1.25) drop-shadow(0 0 12px var(--emerald));
+    }
+
+    .avatar-overlay-tag {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(transparent, rgba(0, 0, 0, 0.92));
+      padding: 1.2rem 0.85rem 0.65rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      font-size: 0.72rem;
+    }
+
+    .peephole-badge {
+      display: inline-block;
+      background: rgba(0, 255, 157, 0.16);
+      border: 1px solid var(--emerald);
+      color: var(--emerald);
+      padding: 0.15rem 0.5rem;
+      font-weight: 700;
+    }
+
+    .hero-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 1.2rem;
+    }
+
+    .hero-header-meta {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .hero-main-title {
+      font-family: 'VT323', monospace;
+      font-size: clamp(2.6rem, 5vw, 4.3rem);
+      line-height: 0.95;
+      color: #ffffff;
+      text-shadow: 0 0 18px var(--emerald-glow), 3px 3px 0px #062b1c;
+      letter-spacing: 3px;
+      margin: 0.25rem 0;
+    }
+
+    .slogan-banner {
+      display: inline-flex;
+      align-items: center;
+      gap: 1rem;
+      background: rgba(217, 38, 38, 0.12);
+      border-left: 4px solid var(--crimson);
+      border-top: 1px solid rgba(217, 38, 38, 0.35);
+      border-right: 1px solid rgba(217, 38, 38, 0.35);
+      border-bottom: 1px solid rgba(217, 38, 38, 0.35);
+      padding: 0.6rem 1.2rem;
+      margin: 0.35rem 0;
+      width: fit-content;
+    }
+
+    .slogan-text {
+      font-family: 'Special Elite', cursive;
+      font-size: 1.55rem;
+      color: #ff4d4d;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      text-shadow: 0 0 12px var(--crimson-glow);
+    }
+
+    .alive-switch {
+      display: flex;
+      gap: 0.4rem;
+    }
+
+    .state-pill {
+      background: #09130f;
+      border: 1px solid var(--border-line);
+      color: var(--text-muted);
+      padding: 0.25rem 0.65rem;
+      font-size: 0.72rem;
+      font-family: 'JetBrains Mono', monospace;
+      cursor: pointer;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .state-pill.active-alive {
+      background: var(--emerald);
+      color: #000;
+      border-color: var(--emerald);
+      box-shadow: 0 0 12px var(--emerald);
+    }
+
+    .state-pill.active-die {
+      background: var(--crimson);
+      color: #fff;
+      border-color: var(--crimson);
+      box-shadow: 0 0 12px var(--crimson);
+    }
+
+    .bio-box {
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px dashed var(--emerald-dim);
+      padding: 1rem 1.15rem;
+      font-size: 0.88rem;
+      color: #bfe8d7;
+      position: relative;
+    }
+
+    .bio-box[contenteditable="false"]:focus {
+      outline: 1px solid var(--emerald);
+      background: rgba(0, 255, 157, 0.05);
+    }
+
+    .bio-hint {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      margin-top: 0.4rem;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.75rem;
+    }
+
+    .stat-card {
+      background: #050d0a;
+      border: 1px solid var(--border-line);
+      padding: 0.65rem 0.85rem;
+    }
+
+    .stat-label {
+      font-size: 0.66rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    .stat-val {
+      font-family: 'VT323', monospace;
+      font-size: 1.55rem;
+      color: var(--emerald);
+    }
+
+    /* Section Header */
+    .section-head {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 1rem;
+      margin: 2.2rem 0 1.2rem;
+      padding-bottom: 0.65rem;
+      border-bottom: 1px solid var(--emerald-dim);
+    }
+
+    .section-title {
+      font-family: 'VT323', monospace;
+      font-size: 2.1rem;
+      color: var(--emerald);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .section-subtitle {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* Filter & Search Bar */
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.4rem;
+      background: var(--bg-panel);
+      padding: 0.85rem 1rem;
+      border: 1px solid var(--border-line);
+    }
+
+    .filter-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+    }
+
+    .filter-chip {
+      background: #040a07;
+      border: 1px solid var(--border-line);
+      color: var(--text-muted);
+      padding: 0.35rem 0.75rem;
+      font-size: 0.75rem;
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    .filter-chip.active, .filter-chip:hover {
+      border-color: var(--emerald);
+      color: var(--emerald);
+      background: rgba(0, 255, 157, 0.1);
+    }
+
+    .search-input {
+      background: #020604;
+      border: 1px solid var(--emerald-dim);
+      color: var(--text-main);
+      padding: 0.45rem 0.85rem;
+      font-family: inherit;
+      font-size: 0.8rem;
+      min-width: 240px;
+    }
+
+    /* Direct Web Post Composer Drawer / Panel */
+    .composer-panel {
+      background: linear-gradient(180deg, #091913 0%, #050d0a 100%);
+      border: 2px solid var(--emerald);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 0 35px rgba(0, 255, 157, 0.18);
+      display: none;
+    }
+
+    .composer-panel.open {
+      display: block;
+      animation: fadeIn 0.25s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .composer-grid {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 1.25rem;
+      margin-top: 1rem;
+    }
+
+    .form-group {
+      margin-bottom: 0.95rem;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--emerald);
+      margin-bottom: 0.35rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      background: #030806;
+      border: 1px solid var(--emerald-dim);
+      color: var(--text-main);
+      padding: 0.65rem 0.85rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+    }
+
+    .form-textarea {
+      min-height: 170px;
+      resize: vertical;
+      line-height: 1.6;
+    }
+
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      outline: none;
+      border-color: var(--emerald);
+      box-shadow: 0 0 12px var(--emerald-glow);
+    }
+
+    .upload-dropzone {
+      border: 2px dashed var(--emerald-dim);
+      background: rgba(0, 255, 157, 0.03);
+      padding: 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+      min-height: 180px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .upload-dropzone:hover {
+      border-color: var(--emerald);
+      background: rgba(0, 255, 157, 0.08);
+    }
+
+    .upload-preview {
+      max-width: 100%;
+      max-height: 160px;
+      object-fit: cover;
+      border: 1px solid var(--emerald);
+      display: none;
+    }
+
+    /* Blog Posts Grid */
+    .posts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 1.4rem;
+    }
+
+    /* Style 1: Dark Eerie Card */
+    .post-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-line);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.25s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .post-card:hover {
+      border-color: var(--emerald);
+      transform: translateY(-4px);
+      box-shadow: 0 10px 28px rgba(0, 255, 157, 0.14);
+    }
+
+    /* Style 2: Kraft Red Stamp Card (Like 14 Lies Poster) */
+    .post-card.kraft-style {
+      background: var(--kraft);
+      color: #16120e;
+      border: 2px solid #2b2118;
+      box-shadow: inset 0 0 25px rgba(102, 72, 38, 0.35);
+    }
+
+    .post-card.kraft-style .post-title {
+      color: #111;
+      font-family: 'Special Elite', cursive;
+    }
+
+    .post-card.kraft-style .post-excerpt {
+      color: #2c2219;
+    }
+
+    .post-card.kraft-style .post-meta {
+      color: #4a3828;
+      border-bottom: 1px solid rgba(0,0,0,0.2);
+    }
+
+    .post-card.kraft-style .post-img-wrap {
+      background: #bf211e;
+      padding: 6px;
+      border-bottom: 2px solid #16120e;
+    }
+
+    .post-card.kraft-style .post-img-wrap img {
+      mix-blend-mode: multiply;
+      filter: contrast(1.35) grayscale(0.2);
+    }
+
+    .post-img-wrap {
+      width: 100%;
+      height: 215px;
+      overflow: hidden;
+      background: #020504;
+      border-bottom: 1px solid var(--border-line);
+      position: relative;
+    }
+
+    .post-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+
+    .post-card:hover .post-img-wrap img {
+      transform: scale(1.06);
+    }
+
+    .stamp-number {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(3, 8, 6, 0.88);
+      border: 1px solid var(--emerald);
+      color: var(--emerald);
+      font-family: 'VT323', monospace;
+      font-size: 1.35rem;
+      padding: 0.1rem 0.55rem;
+      z-index: 2;
+    }
+
+    .post-card.kraft-style .stamp-number {
+      background: #16120e;
+      color: var(--kraft);
+      border-color: #16120e;
+    }
+
+    .mood-tag {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0.85);
+      color: #fff;
+      padding: 0.15rem 0.55rem;
+      font-size: 0.68rem;
+      border: 1px solid var(--emerald-dim);
+      text-transform: uppercase;
+    }
+
+    .post-body {
+      padding: 1.15rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .post-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      padding-bottom: 0.5rem;
+      margin-bottom: 0.65rem;
+      border-bottom: 1px dashed var(--border-line);
+    }
+
+    .post-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--emerald);
+      margin-bottom: 0.55rem;
+      line-height: 1.35;
+    }
+
+    .post-excerpt {
+      font-size: 0.83rem;
+      color: #b9dfd0;
+      display: -webkit-box;
+      -webkit-line-clamp: 4;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin-bottom: 1rem;
+      white-space: pre-line;
+    }
+
+    .post-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: auto;
+      padding-top: 0.75rem;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .btn-sm {
+      background: transparent;
+      border: 1px solid var(--emerald-dim);
+      color: var(--emerald);
+      padding: 0.3rem 0.65rem;
+      font-family: inherit;
+      font-size: 0.72rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-sm:hover {
+      background: var(--emerald);
+      color: #000;
+    }
+
+    .post-card.kraft-style .btn-sm {
+      border-color: #16120e;
+      color: #16120e;
+      font-weight: 700;
+    }
+
+    .post-card.kraft-style .btn-sm:hover {
+      background: #bf211e;
+      color: #fff;
+      border-color: #bf211e;
+    }
+
+    .btn-danger-sm {
+      border-color: rgba(217, 38, 38, 0.5);
+      color: #ff6b6b;
+    }
+    .btn-danger-sm:hover {
+      background: var(--crimson);
+      color: #fff;
+    }
+
+    /* Image Vault Gallery */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 1rem;
+    }
+
+    .gallery-item {
+      border: 1px solid var(--border-line);
+      background: #050c09;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.35s ease;
+    }
+
+    .gallery-item:hover img {
+      transform: scale(1.06);
+    }
+
+    .gallery-caption {
+      padding: 0.6rem 0.75rem;
+      font-size: 0.75rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #07120d;
+      border-top: 1px solid var(--border-line);
+    }
+
+    /* Radio & Data Backup Split Section */
+    .split-bottom {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-top: 2.5rem;
+    }
+
+    .panel-box {
+      background: var(--bg-panel);
+      border: 1px solid var(--emerald-dim);
+      padding: 1.35rem;
+    }
+
+    .wave-canvas {
+      width: 100%;
+      height: 75px;
+      background: #020604;
+      border: 1px solid var(--border-line);
+      margin: 0.85rem 0;
+      display: block;
+    }
+
+    /* Reader Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.86);
+      backdrop-filter: blur(5px);
+      z-index: 5000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1.25rem;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-box {
+      background: #07120e;
+      border: 2px solid var(--emerald);
+      max-width: 780px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 1.75rem;
+      position: relative;
+      box-shadow: 0 0 50px rgba(0, 255, 157, 0.25);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: var(--crimson);
+      color: #fff;
+      border: none;
+      padding: 0.35rem 0.75rem;
+      font-family: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #06150f;
+      border: 1px solid var(--emerald);
+      color: var(--emerald);
+      padding: 0.75rem 1.2rem;
+      font-size: 0.82rem;
+      box-shadow: 0 0 20px rgba(0, 255, 157, 0.3);
+      z-index: 9999;
+      display: none;
+    }
+
+    @media (max-width: 860px) {
+      .hero-grid, .composer-grid, .split-bottom {
+        grid-template-columns: 1fr;
+      }
+      .stats-row {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="enhancements.css">
+</head>
+<body>
+
+  <!-- TOP NAVIGATION & DIRECT WRITE BUTTON -->
+  <header class="topbar">
+    <div class="brand-box">
+      <span class="status-dot" id="statusDot"></span>
+      <span class="brand-title">NO, ONLY HOAI HERE</span>
+      <span class="brand-sub" id="statusBadge">ALIVE // ISOLATED</span>
+      <nav class="social-links" aria-label="Kết nối với Hoài">
+        <a class="social-link" href="https://www.facebook.com/edzorc" target="_blank" rel="noopener noreferrer" aria-label="Facebook của Hoài (mở tab mới)" title="Facebook // Hoài">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M15.9 3h-3.1C9.7 3 8 4.9 8 8v2H5v4h3v7h4v-7h3.2l.6-4H12V8c0-1.1.4-1.5 1.6-1.5h2.3V3Z"/>
+          </svg>
+        </a>
+        <a class="social-link" href="https://discord.com/invite/qPDtERBV" target="_blank" rel="noopener noreferrer" aria-label="Tham gia Discord của Hoài (mở tab mới)" title="Discord // Tín hiệu từ Hoài">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path fill-rule="evenodd" d="M19.7 5.1a18.4 18.4 0 0 0-4.4-1.4l-.6 1.2a16.1 16.1 0 0 0-5.4 0l-.6-1.2a18.4 18.4 0 0 0-4.4 1.4C1.5 9.2.8 13.2 1.2 17.1a18 18 0 0 0 5.5 2.8l1.1-1.8-1.7-.8.4-.3a16.3 16.3 0 0 0 11 0l.4.3-1.7.8 1.1 1.8a18 18 0 0 0 5.5-2.8c.5-4.5-.8-8.5-3.1-12ZM8.4 14.8c-1 0-1.7-.9-1.7-2s.7-2 1.7-2 1.7.9 1.7 2-.7 2-1.7 2Zm7.2 0c-1 0-1.7-.9-1.7-2s.7-2 1.7-2 1.7.9 1.7 2-.7 2-1.7 2Z"/>
+          </svg>
+        </a>
+      </nav>
+      <div class="language-switch" role="group" aria-label="Ngôn ngữ / Language">
+        <button type="button" class="btn-sm" data-language="vi" aria-pressed="true" lang="vi" onclick="HoaiLanguage.set('vi')">VI</button>
+        <span aria-hidden="true">/</span>
+        <button type="button" class="btn-sm" data-language="en" aria-pressed="false" lang="en" onclick="HoaiLanguage.set('en')">EN</button>
+      </div>
+    </div>
+
+    <nav class="nav-tabs" aria-label="Điều hướng chính">
+      <button class="nav-btn active" onclick="scrollToSec('sec-hero')">01. CÕI RIÊNG</button>
+      <button class="nav-btn" onclick="scrollToSec('sec-posts')">02. NHẬT KÝ & HỒ SƠ</button>
+      <button class="nav-btn" onclick="scrollToSec('sec-gallery')">03. KHO ẢNH</button>
+      <button class="nav-btn" onclick="scrollToSec('sec-backup')">04. ĐÀI ĐÊM & DỮ LIỆU</button>
+      <button class="write-cta-btn" data-owner hidden onclick="toggleComposer()">+ VIẾT BÀI / TẢI ẢNH</button>
+    </nav>
+    <div class="account-bar">
+      <span id="authStatus" role="status">KHÁCH // CHỈ XEM</span>
+      <button class="btn-sm" id="btnUISound" onclick="HoaiSounds.toggle()" aria-pressed="true">♪ TIẾNG BẤM: BẬT</button>
+      <button class="btn-sm" id="btnOwnerLogin" onclick="loginOwner()">ĐĂNG NHẬP CHỦ NHÂN</button>
+      <button class="btn-sm" id="btnOwnerLogout" onclick="logoutOwner()" hidden>ĐĂNG XUẤT</button>
+      <button class="btn-sm" id="btnLocalEditor" onclick="toggleLocalEditor()" hidden>SOẠN THẢO THỬ TRÊN MÁY</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <div id="storageStatus" class="storage-status" role="status">Đang mở kho lưu trữ…</div>
+    <div id="cloudUpdate" class="update-notice" hidden>Bài và ảnh có cập nhật mới. <button class="btn-sm" onclick="refreshCloudData()">TẢI BẢN MỚI</button></div>
+    <div class="owner-panel" data-owner hidden>
+      <p id="cloudAdminStatus" class="helper-text"></p>
+      <button class="btn-sm" id="btnMigrateCloud" onclick="importLocalToCloud()" hidden>ĐƯA DỮ LIỆU TRÊN MÁY LÊN FIREBASE</button>
+    </div>
+    <div id="publishedUpdate" class="update-notice" hidden>
+      Có bản dữ liệu mới trong repository. Bản trên máy vẫn được giữ nguyên.
+      <button class="btn-sm" onclick="loadPublishedData()">NẠP BẢN TỪ GITHUB</button>
+    </div>
+
+    <!-- HERO: HOAI'S PERSONAL SANCTUARY -->
+    <section class="hero-grid" id="sec-hero">
+      <div class="avatar-frame">
+        <img id="hoaiAvatar" src="assets/original-1.jpg" alt="Avatar của Hoài" />
+        <div class="avatar-overlay-tag">
+          <span class="peephole-badge">CHỦ NHÂN: HOÀI</span>
+          <label data-owner hidden style="cursor:pointer; color:#00ff9d; text-decoration:underline; font-size:0.7rem;">
+            [Đổi Avatar]
+            <input type="file" accept="image/*" style="display:none" onchange="changeAvatar(event)" />
+          </label>
+        </div>
+      </div>
+
+      <div class="hero-info">
+        <div>
+          <div class="hero-header-meta">PERSONAL ARCHIVE // PERSONAL SANCTUARY // EST. 2026</div>
+          <h1 class="hero-main-title">NO, ONLY HOAI HERE.</h1>
+
+          <div class="slogan-banner">
+            <span class="slogan-text" id="sloganDisplay">alive or die ?</span>
+            <div class="alive-switch">
+              <button class="state-pill active-alive" id="btnAlive" data-owner hidden onclick="setLifeState('ALIVE')">ALIVE</button>
+              <button class="state-pill" id="btnDie" data-owner hidden onclick="setLifeState('DIE')">DIE ?</button>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="bio-box" id="hoaiBio" contenteditable="false" spellcheck="false" role="textbox" aria-label="Lời tự bạch của Hoài" aria-multiline="true">
+            "Cánh cửa này chỉ mở từ bên trong. Không có khách viếng thăm, không có tiếng ồn của đám đông — nơi này chỉ có một mình Hoài, những dòng nhật ký lúc nửa đêm và những bức ảnh lưu giữ thứ sự thật duy nhất."
+          </div>
+          <div class="bio-hint" data-owner hidden>
+            <span>* Nhấp trực tiếp vào khung chữ trên để sửa lời tự bạch của Hoài (Tự động lưu)</span>
+            <span id="clockDisplay">00:00:00</span>
+          </div>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-label">CHỦ SỞ HỮU</div>
+            <div class="stat-val">ONLY HOÀI</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">TỔNG BÀI VIẾT</div>
+            <div class="stat-val" id="statPostCount">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">ẢNH LƯU TRỮ</div>
+            <div class="stat-val" id="statImgCount">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">TRẠNG THÁI CỬA</div>
+            <div class="stat-val" style="color:#ff4d4d;">CÕI RIÊNG</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DIRECT ON-WEB POST COMPOSER & IMAGE UPLOADER -->
+    <section data-owner hidden class="composer-panel" id="composerPanel">
+      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--emerald-dim); padding-bottom:0.65rem;">
+        <h2 style="font-family:'VT323',monospace; font-size:1.8rem; color:var(--emerald); letter-spacing:1.5px;">
+          [TRẠM SOẠN THẢO TRỰC TIẾP TRÊN WEB CỦA HOÀI]
+        </h2>
+        <button class="btn-sm btn-danger-sm" data-owner hidden onclick="toggleComposer()">ĐÓNG [X]</button>
+      </div>
+
+      <p id="draftStatus" class="helper-text" role="status">Bản nháp tự lưu trên máy khi bạn nhập.</p>
+      <div class="composer-grid">
+        <div>
+          <div class="form-group">
+            <label class="form-label" for="postTitleInput">Tiêu đề bài viết / Hồ sơ</label>
+            <input type="text" id="postTitleInput" class="form-input" placeholder="Ví dụ: Đêm thứ 14 - Chỉ còn tiếng radio..." />
+          </div>
+
+          <div class="composer-options">
+            <div class="form-group">
+              <label class="form-label" for="postCatInput">Chuyên mục</label>
+              <select id="postCatInput" class="form-select">
+                <option value="NHẬT KÝ ĐÊM">NHẬT KÝ ĐÊM</option>
+                <option value="HỒ SƠ MẬT">HỒ SƠ MẬT</option>
+                <option value="TẢN VĂN CÔ ĐỘC">TẢN VĂN CÔ ĐỘC</option>
+                <option value="GÓC SUY NGẪM">GÓC SUY NGẪM</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="postMoodInput">Tâm trạng (Alive / Die)</label>
+              <select id="postMoodInput" class="form-select">
+                <option value="ALIVE // TỈNH TÁO">ALIVE // TỈNH TÁO</option>
+                <option value="ISOLATED // CÔ LẬP">ISOLATED // CÔ LẬP</option>
+                <option value="DIE ? // MẤT KẾT NỐI">DIE ? // MẤT KẾT NỐI</option>
+                <option value="SILENT // IM LẶNG">SILENT // IM LẶNG</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="postStyleInput">Phong cách thẻ bài</label>
+              <select id="postStyleInput" class="form-select">
+                <option value="dark">Đen Lục Bảo (No, I'm Not Human)</option>
+                <option value="kraft">Giấy Cũ Đóng Dấu Đỏ (14 Lies)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="postContentInput">Nội dung bài viết của Hoài</label>
+            <textarea id="postContentInput" class="form-textarea" placeholder="Viết bất cứ điều gì Hoài muốn lưu giữ tại đây..."></textarea>
+          </div>
+        </div>
+
+        <!-- Image Upload Column -->
+        <div style="display:flex; flex-direction:column; justify-content:space-between;">
+          <div>
+            <label class="form-label">Tải ảnh đính kèm bài viết (Từ máy tính/điện thoại)</label>
+            <label class="upload-dropzone" id="dropzoneBox">
+              <img id="uploadPreviewImg" class="upload-preview" alt="Preview" />
+              <div id="uploadPromptText">
+                <div style="font-size:1.8rem; color:var(--emerald);">[+]</div>
+                <div style="font-size:0.78rem; color:var(--text-main);">Nhấp để chọn ảnh hoặc kéo thả vào đây</div>
+                <div style="font-size:0.68rem; color:var(--text-muted); margin-top:4px;">Nén ảnh để lưu trên máy • Xuất bản sao lưu để giữ lâu dài</div>
+              </div>
+              <input type="file" id="postImageInput" accept="image/*" style="display:none" onchange="previewPostImage(event)" />
+            </label>
+            <button type="button" class="btn-sm" style="margin-top:0.5rem; width:100%;" onclick="clearPreviewImage()">Xóa ảnh đính kèm</button>
+          </div>
+
+          <div style="margin-top:1rem;">
+            <button type="button" class="write-cta-btn" style="width:100%; padding:0.8rem; font-size:0.95rem;" onclick="publishPost()">
+              LƯU BÀI VIẾT VÀO LÃNH ĐỊA
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BLOG ARCHIVE SECTION -->
+    <section id="sec-posts">
+      <div class="section-head">
+        <div>
+          <h2 class="section-title">02 // NHẬT KÝ & HỒ SƠ CỦA HOÀI</h2>
+          <p class="section-subtitle">Mọi suy nghĩ, câu chuyện và hình ảnh do chính Hoài viết và lưu trữ.</p>
+        </div>
+        <button class="write-cta-btn" data-owner hidden onclick="toggleComposer()">+ VIẾT BÀI MỚI NGAY</button>
+      </div>
+
+      <div class="toolbar">
+        <div class="filter-group" id="categoryFilters">
+          <button class="filter-chip active" onclick="filterPosts('ALL', this)">TẤT CẢ</button>
+          <button class="filter-chip" onclick="filterPosts('NHẬT KÝ ĐÊM', this)">NHẬT KÝ ĐÊM</button>
+          <button class="filter-chip" onclick="filterPosts('HỒ SƠ MẬT', this)">HỒ SƠ MẬT</button>
+          <button class="filter-chip" onclick="filterPosts('TẢN VĂN CÔ ĐỘC', this)">TẢN VĂN CÔ ĐỘC</button>
+          <button class="filter-chip" onclick="filterPosts('GÓC SUY NGẪM', this)">GÓC SUY NGẪM</button>
+        </div>
+        <input aria-label="Tìm bài viết" type="search" id="searchInput" class="search-input" placeholder="Tìm kiếm trong nhật ký của Hoài..." oninput="renderPosts()" />
+      </div>
+
+      <p id="searchSummary" class="helper-text" aria-live="polite"></p>
+      <div class="posts-grid" id="postsContainer"></div>
+    </section>
+
+    <!-- IMAGE VAULT / PERSONAL GALLERY SECTION -->
+    <section id="sec-gallery">
+      <div class="section-head">
+        <div>
+          <h2 class="section-title">03 // KHO LƯU TRỮ HÌNH ẢNH CÁ NHÂN</h2>
+          <p class="section-subtitle">Nơi Hoài tải lên những bức ảnh tâm đắc để trưng bày riêng.</p>
+        </div>
+        <label data-owner hidden class="write-cta-btn" style="cursor:pointer;">
+          + TẢI ẢNH LÊN KHO
+          <input type="file" accept="image/*" style="display:none" onchange="uploadGalleryImage(event)" />
+        </label>
+      </div>
+
+      <div class="gallery-grid" id="galleryContainer"></div>
+    </section>
+
+    <!-- RADIO SYNTH & GITHUB PAGES DATA BACKUP -->
+    <section class="split-bottom" id="sec-backup">
+      <div class="panel-box radio-station">
+        <h3 style="font-family:'VT323',monospace; font-size:1.65rem; color:var(--emerald); letter-spacing:1px;">
+          ĐÀI PHÁT THANH ĐÊM KHUYA // TẦN SỐ CỦA HOÀI
+        </h3>
+        <div class="station-readout">
+          <div><span class="station-caption">HOAI // NIGHT TRANSMISSION</span><div class="station-frequency"><span id="frequencyReadout">55</span><small>Hz</small></div></div>
+          <span id="musicStatus" class="station-signal" role="status">● STANDBY</span>
+        </div>
+        <div class="station-scope">
+          <div class="scope-caption"><span>WAVEFORM // 04 TRACES</span><span>LIVE AUDIO</span></div>
+          <canvas id="radioCanvas" width="960" height="360" aria-label="Bốn dải sóng và phổ âm phản ứng theo nhạc đang phát"></canvas>
+          <div class="scope-caption scope-footer"><span>LOW</span><span>SPECTRUM // 64 BANDS</span><span>HIGH</span></div>
+        </div>
+        <div class="station-track"><span>NOW TUNED</span><strong>No, I'm not a Human</strong><small>ORIGINAL SOUNDTRACK // FULL OST</small></div>
+        <audio id="soundtrack" preload="metadata" loop aria-label="Nhạc nền Original Soundtrack">
+          <source src="assets/no-im-not-a-human-ost.mp3" type="audio/mpeg">
+          Trình duyệt của bạn chưa hỗ trợ phát nhạc.
+        </audio>
+        <div class="station-timeline">
+          <span id="musicElapsed">00:00</span>
+          <input id="musicSeek" type="range" min="0" max="1000" value="0" step="1" aria-label="Tua nhạc" disabled>
+          <span id="musicDuration">--:--</span>
+        </div>
+        <div class="station-transport">
+          <button class="write-cta-btn" id="btnRadioToggle" onclick="toggleRadio()" aria-pressed="false">▶ PHÁT NHẠC</button>
+          <label class="station-volume" for="musicVolume">ÂM LƯỢNG <output id="volumeReadout">35%</output><input id="musicVolume" type="range" min="0" max="100" value="35" aria-label="Âm lượng đài"></label>
+        </div>
+        <div class="station-speed">
+          <span>TỐC ĐỘ PHÁT</span>
+          <div class="playback-speeds" role="group" aria-label="Tốc độ phát nhạc">
+            <button class="filter-chip" data-playback-rate="0.25" onclick="changePlaybackRate(0.25)" aria-pressed="false">0.25×</button>
+            <button class="filter-chip" data-playback-rate="0.5" onclick="changePlaybackRate(0.5)" aria-pressed="false">0.5×</button>
+            <button class="filter-chip active" data-playback-rate="1" onclick="changePlaybackRate(1)" aria-pressed="true">1×</button>
+            <button class="filter-chip" data-playback-rate="1.5" onclick="changePlaybackRate(1.5)" aria-pressed="false">1.5×</button>
+          </div>
+        </div>
+        <div class="station-tuning">
+          <div class="tuning-label"><span>TẦN SỐ NỀN</span><button class="btn-sm" id="btnFrequencyToggle" onclick="toggleFrequencyRadio()" aria-pressed="false">BẬT NỀN SYNTH</button></div>
+          <div class="frequency-actions" role="group" aria-label="Chọn tần số nền">
+            <button class="filter-chip active" data-frequency="55" onclick="changeRadioFreq(55)" aria-pressed="true"><strong>55</strong> Hz <small>SÂU THẲM</small></button>
+            <button class="filter-chip" data-frequency="110" onclick="changeRadioFreq(110)" aria-pressed="false"><strong>110</strong> Hz <small>CÔ ĐỘC</small></button>
+            <button class="filter-chip" data-frequency="73.4" onclick="changeRadioFreq(73.4)" aria-pressed="false"><strong>73.4</strong> Hz <small>HOÀI</small></button>
+          </div>
+          <p id="frequencyStatus" class="helper-text" role="status">55 Hz // NỀN ĐANG TẮT</p>
+        </div>
+      </div>
+
+      <div class="panel-box" data-owner hidden>
+        <h3 style="font-family:'VT323',monospace; font-size:1.65rem; color:var(--emerald); letter-spacing:1px;">
+          LƯU TRỮ & ĐƯA LÊN GITHUB PAGES
+        </h3>
+        <p style="font-size:0.78rem; color:var(--text-muted); margin-top:0.25rem; margin-bottom:0.9rem;">
+          Bài viết và ảnh mới được lưu trên trình duyệt này bằng IndexedDB. Để giữ trên GitHub và mở ở máy khác, xuất dữ liệu xuất bản, thay tệp <code>data/site-data.js</code> trong repository rồi đẩy lên GitHub. Bản JSON dùng để sao lưu và khôi phục trên máy.
+          <br>Trang cá nhân trên GitHub Pages có thể được người khác xem qua đường dẫn; đây chưa phải kho có mật khẩu.
+        </p>
+        <div style="display:flex; gap:0.65rem; flex-wrap:wrap;">
+          <button class="write-cta-btn" onclick="exportPublishedData()">⬆ XUẤT DỮ LIỆU CHO GITHUB</button>
+          <button class="write-cta-btn" onclick="exportBackupJSON()">⬇ TẢI FILE SAO LƯU (.JSON)</button>
+          <label class="btn-sm" style="cursor:pointer; display:inline-flex; align-items:center;">
+            ⬆ NHẬP FILE DỮ LIỆU (.JSON)
+            <input type="file" accept=".json" style="display:none" onchange="importBackupJSON(event)" />
+          </label>
+          <button class="btn-sm btn-danger-sm" onclick="resetDefaultData()">KHÔI PHỤC BẢN XUẤT BẢN</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <dialog id="ownerLoginDialog" class="owner-login" aria-labelledby="ownerLoginTitle">
+    <form onsubmit="submitOwnerLogin(event)">
+      <h2 id="ownerLoginTitle">ĐĂNG NHẬP CHỦ NHÂN</h2>
+      <p class="helper-text">Tài khoản quản trị của Hoài. Khách có thể xem bài và ảnh mà không đăng nhập.</p>
+      <label class="form-label" for="ownerEmail">EMAIL</label>
+      <input class="form-input" id="ownerEmail" type="email" autocomplete="username" required>
+      <label class="form-label" for="ownerPassword">MẬT KHẨU</label>
+      <input class="form-input" id="ownerPassword" type="password" autocomplete="current-password" required>
+      <p id="ownerLoginError" class="helper-text" role="status" aria-live="polite"></p>
+      <div class="frequency-actions">
+        <button id="ownerLoginSubmit" class="write-cta-btn" type="submit">ĐĂNG NHẬP</button>
+        <button class="btn-sm" type="button" onclick="closeOwnerLogin()">ĐÓNG</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- POST READER MODAL -->
+  <div class="modal-backdrop" id="readerModal" role="dialog" aria-modal="true" aria-label="Đọc bài viết và xem ảnh" tabindex="-1" onclick="if(event.target===this) closeReader()">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeReader()">ĐÓNG [ESC]</button>
+      <div id="modalContentArea"></div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toastBox" role="status" aria-live="polite">Đã lưu vào lãnh địa của Hoài!</div>
+
+  <script src="i18n.js"></script>
+  <script src="supabase-config.js"></script>
+  <script src="supabase-client.js"></script>
+  <script src="ui-sounds.js"></script>
+  <script src="access.js"></script>
+  <script src="data/site-data.js"></script>
+  <script src="radio.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

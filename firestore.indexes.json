@@ -1,0 +1,6 @@
+{
+  "indexes": [],
+  "fieldOverrides": [
+    { "collectionGroup": "posts", "fieldPath": "content", "indexes": [] }
+  ]
+}
