@@ -429,14 +429,16 @@ function renderPosts() {
 function renderGallery() {
   $('galleryContainer').innerHTML = appState.gallery.length ? appState.gallery.map(image => `
     <div class="gallery-item">
-      <button class="gallery-open" data-gallery-label onclick="viewGalleryImage('${image.id}')" aria-label="Xem ${escapeHtml(image.title)}">
-        <img data-gallery-label src="${escapeHtml(image.src)}" alt="${escapeHtml(image.title)}" loading="lazy"></button>
-      <div class="gallery-caption"><span>${escapeHtml(image.title)}</span>
-        <button data-owner ${canEdit() ? '' : 'hidden'} class="btn-sm btn-danger-sm" onclick="deleteGalleryItem('${image.id}')">Xóa</button></div>
+      <button class="gallery-open" data-gallery-label onclick="viewGalleryImage('${image.id}')" aria-label="${escapeHtml((HoaiLanguage.current === 'en' ? 'View ' : 'Xem ') + galleryCaption(image))}">
+        <img data-gallery-label src="${escapeHtml(image.src)}" alt="${escapeHtml(galleryCaption(image))}" loading="lazy"></button>
+      <div class="gallery-caption"><span data-no-translate>${escapeHtml(galleryCaption(image))}</span>
+        <div class="gallery-caption-actions" data-owner ${canEdit() ? '' : 'hidden'}><button class="btn-sm" onclick="editGalleryCaption('${image.id}')">SỬA</button>
+        <button class="btn-sm btn-danger-sm" onclick="deleteGalleryItem('${image.id}')">Xóa</button></div></div>
     </div>`).join('') : '<div class="empty-state">Kho ảnh đang trống. Thêm ảnh để giữ lại một khoảnh khắc.</div>';
 }
 
 function showReader(html) {
+  delete $('readerModal').dataset.galleryId;
   previousFocus = document.activeElement;
   $('modalContentArea').innerHTML = html;
   $('readerModal').classList.add('open');
@@ -455,11 +457,14 @@ function openReader(id) {
     <p class="helper-text">HOÀI // ${escapeHtml(post.mood)}</p>`);
 }
 
-function viewGalleryImage(id) {
+function viewGalleryImage(id, refresh = false) {
   const image = appState.gallery.find(item => item.id === id);
   if (!image) return;
-  showReader(`<h2 class="reader-title" data-gallery-label>${escapeHtml(image.title)}</h2>
-    <img class="reader-image" data-gallery-label src="${escapeHtml(image.src)}" alt="${escapeHtml(image.title)}">`);
+  const html = `<h2 class="reader-title" data-gallery-label data-no-translate>${escapeHtml(galleryCaption(image))}</h2>
+    <img class="reader-image" data-gallery-label src="${escapeHtml(image.src)}" alt="${escapeHtml(galleryCaption(image))}">`;
+  if (refresh) $('modalContentArea').innerHTML = html;
+  else showReader(html);
+  $('readerModal').dataset.galleryId = id;
 }
 
 function closeReader() {

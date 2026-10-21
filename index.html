@@ -1139,7 +1139,20 @@
         </div>
       </div>
 
-      <div class="panel-box" data-owner hidden>
+      <aside class="panel-box surveillance" aria-labelledby="surveillanceTitle">
+        <div class="surveillance-heading"><h3 id="surveillanceTitle">GIÁM SÁT ĐÊM</h3><span class="camera-indicator">● REC</span></div>
+        <p class="helper-text">Tín hiệu hư cấu // Không phải camera trực tiếp</p>
+        <div class="camera-screen">
+          <img id="cameraImage" src="assets/quiet-room.jpg" alt="Căn phòng im lặng" loading="lazy">
+          <div class="camera-hud"><span id="cameraNumber">CAM 01</span><time id="cameraClock">--:--:--</time></div>
+          <div class="camera-location" id="cameraLocation">Căn phòng im lặng</div>
+        </div>
+        <div class="camera-controls"><span>QUAN SÁT / CHỜ TÍN HIỆU</span><button type="button" class="btn-sm" onclick="HoaiSurveillance.next()">ĐỔI CAMERA →</button></div>
+        <blockquote class="transmission-quote">“Nếu nghe thấy tên mình trên radio, đừng trả lời.”</blockquote>
+        <div class="signal-heading">NHẬT KÝ TÍN HIỆU</div>
+        <ol id="signalLog" class="signal-log" aria-label="Nhật ký tín hiệu hư cấu"></ol>
+      </aside>
+      <div class="panel-box backup-panel" data-owner hidden>
         <h3 style="font-family:'VT323',monospace; font-size:1.65rem; color:var(--emerald); letter-spacing:1px;">
           LƯU TRỮ & ĐƯA LÊN GITHUB PAGES
         </h3>
@@ -1160,6 +1173,19 @@
     </section>
 
   </main>
+
+  <dialog id="galleryEditDialog" class="owner-login" aria-labelledby="galleryEditTitle">
+    <form onsubmit="saveGalleryCaption(event)">
+      <h2 id="galleryEditTitle">SỬA CHÚ THÍCH ẢNH</h2>
+      <label class="form-label" for="galleryCaptionVi">Tiếng Việt</label>
+      <textarea id="galleryCaptionVi" class="form-input" maxlength="200" required rows="3"></textarea>
+      <label class="form-label" for="galleryCaptionEn">English</label>
+      <textarea id="galleryCaptionEn" class="form-input" maxlength="200" required rows="3"></textarea>
+      <p class="helper-text">Mỗi ngôn ngữ tối đa 200 ký tự. Nội dung đổi theo VI / EN.</p>
+      <p id="galleryEditError" class="helper-text" role="status"></p>
+      <div class="gallery-edit-actions"><button id="galleryEditSave" type="submit" class="write-cta-btn">LƯU CHÚ THÍCH</button><button id="galleryEditCancel" type="button" class="btn-sm" onclick="closeGalleryEditor()">HỦY</button></div>
+    </form>
+  </dialog>
 
   <dialog id="ownerLoginDialog" class="owner-login" aria-labelledby="ownerLoginTitle">
     <form onsubmit="submitOwnerLogin(event)">
@@ -1195,6 +1221,8 @@
   <script src="access.js"></script>
   <script src="data/site-data.js"></script>
   <script src="radio.js"></script>
+  <script src="gallery-editor.js"></script>
   <script src="app.js"></script>
+  <script src="surveillance.js"></script>
 </body>
 </html>

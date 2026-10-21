@@ -14,6 +14,8 @@ Một website cá nhân mang phong cách kinh dị CRT/VHS: màn hình xanh lụ
 - Nhật ký có tìm kiếm, lọc chuyên mục và chế độ đọc bài.
 - Kho ảnh với xem ảnh lớn, nén ảnh tải lên và quản lý dành riêng cho chủ nhân.
 - Đài nhạc: waveform, phổ âm, tua, âm lượng, tốc độ phát, nhạc lặp và synth nền.
+- Giám sát đêm: bốn góc camera từ ảnh có sẵn, đổi camera thủ công/tự động, đồng hồ và nhật ký tín hiệu hư cấu, đồng bộ VI / EN.
+- Chủ nhân sửa chú thích từng ảnh bằng hai ô Việt/Anh; khách chỉ xem.
 - Supabase lưu bài và ảnh; Authentication, RLS và Storage policies kiểm soát quyền ghi.
 - GitHub Pages phục vụ giao diện; HTML, CSS và JavaScript thuần, không cần build.
 
@@ -53,6 +55,10 @@ Khi chưa kết nối Supabase, khách xem bài/ảnh có sẵn. Chỉ localhost
 
 ## Lưu trữ và quyền truy cập
 
+Để sửa chú thích ảnh: đăng nhập chủ nhân → **Kho ảnh → SỬA** dưới ảnh → nhập cả bản Việt và Anh → **LƯU CHÚ THÍCH**. Mỗi bản tối đa 200 ký tự. Đổi VI / EN sẽ hiện bản tương ứng trong kho và cửa sổ ảnh lớn. Hủy không thay đổi dữ liệu; nếu lưu lỗi, văn bản được giữ trong hộp sửa.
+
+Hai bản chú thích được đóng gói trong trường `title` có sẵn với tiền tố `@hoai-caption:`; ảnh cũ dùng chuỗi đơn vẫn được hỗ trợ. Không cần thay schema hay chạy lại SQL Supabase.
+
 - Bài, bio, danh sách ảnh: bảng hoai_site trong Supabase; mỗi lần lưu là một snapshot nguyên tử có revision.
 - Ảnh tải thêm: bucket hoai-images, không nhúng byte ảnh vào database.
 - Chủ nhân: tài khoản email/mật khẩu tạo trong Supabase Authentication, UUID gán thủ công trong SQL và cấu hình.
@@ -78,7 +84,7 @@ Trang thử tự phát MP3 khi mở và lặp lại khi hết. Nếu trình duy�
 
 ## GitHub Pages
 
-Đưa index.html, app.js, radio.js, access.js, ui-sounds.js, i18n.js, supabase-client.js, supabase-config.js, enhancements.css, assets/, data/ và .nojekyll lên repository.
+Đưa index.html, app.js, radio.js, access.js, ui-sounds.js, i18n.js, gallery-editor.js, surveillance.js, supabase-client.js, supabase-config.js, enhancements.css, assets/, data/ và .nojekyll lên repository.
 
 Bật **Settings → Pages → Deploy from a branch → main → /(root)**. Không cần Firebase Hosting.
 

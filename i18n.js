@@ -220,7 +220,27 @@ window.HoaiLanguage = (() => {
     'Buổi Tế Lễ': 'The Ritual',
     'Tổ chức FEMA': 'FEMA Organization',
     'Vị khách ngoài cửa': 'The Visitor at the Door',
-    'Căn phòng im lặng': 'The Silent Room'
+    'Căn phòng im lặng': 'The Silent Room',
+    'GIÁM SÁT ĐÊM': 'NIGHT SURVEILLANCE',
+    'Tín hiệu hư cấu // Không phải camera trực tiếp': 'FICTIONAL SIGNAL // NOT A LIVE CAMERA',
+    'QUAN SÁT / CHỜ TÍN HIỆU': 'OBSERVE / AWAIT SIGNAL',
+    'ĐỔI CAMERA →': 'SWITCH CAMERA →',
+    '“Nếu nghe thấy tên mình trên radio, đừng trả lời.”': '“If you hear your name on the radio, do not answer.”',
+    'NHẬT KÝ TÍN HIỆU': 'SIGNAL LOG',
+    'Nhật ký tín hiệu hư cấu': 'Fictional signal log',
+    'Đã kết nối camera.': 'Camera connected.',
+    'Phát hiện tiếng gõ cửa.': 'Knocking detected at the door.',
+    'Không xác định người bên ngoài.': 'Unknown presence outside.',
+    'Tín hiệu nhiễu. Tiếp tục quan sát.': 'Signal interference. Keep watching.',
+    'Cánh cửa vẫn đóng.': 'The door remains closed.',
+    'SỬA CHÚ THÍCH ẢNH': 'EDIT IMAGE CAPTION',
+    'Tiếng Việt': 'Vietnamese',
+    'Mỗi ngôn ngữ tối đa 200 ký tự. Nội dung đổi theo VI / EN.': 'Up to 200 characters per language. Captions follow VI / EN.',
+    'LƯU CHÚ THÍCH': 'SAVE CAPTION',
+    'HỦY': 'CANCEL',
+    'Đã lưu chú thích ảnh.': 'Image caption saved.',
+    'Nhập đủ hai ngôn ngữ, mỗi ngôn ngữ tối đa 200 ký tự.': 'Enter both languages, up to 200 characters each.',
+    'Chưa lưu được. Nội dung vẫn được giữ để thử lại.': 'Could not save. Your text is preserved so you can retry.'
   };
   const excluded = 'script,style,svg,[data-no-translate],#hoaiBio,.post-title,.post-excerpt,.reader-title:not([data-gallery-label]),.reader-body,input,textarea';
   const originals = new WeakMap();
@@ -228,17 +248,17 @@ window.HoaiLanguage = (() => {
   let language = 'vi';
   try { language = localStorage.getItem('HOAI_LANGUAGE') === 'en' ? 'en' : 'vi'; } catch { /* Storage is optional. */ }
 
-  function translate(value) {
-    if (language !== 'en') return value;
+  function translate(value, target = language) {
+    if (target !== 'en') return value;
     const key = value.trim();
     if (entries[key]) return value.replace(key, entries[key]);
-    if (key.startsWith('Xem ')) return 'View ' + translate(key.slice(4));
+    if (key.startsWith('Xem ')) return 'View ' + translate(key.slice(4), target);
     const importPrompt = key.match(/^Thay (.+) bằng (\d+) bài viết và (\d+) ảnh\? Nên xuất sao lưu hiện tại trước\.$/);
     if (importPrompt) return `Replace ${destination(importPrompt[1])} with ${importPrompt[2]} posts and ${importPrompt[3]} images? Export a backup first.`;
     const restorePrompt = key.match(/^Thay (.+) bằng bản trong repository\? Hãy xuất sao lưu hiện tại trước\.$/);
     if (restorePrompt) return `Replace ${destination(restorePrompt[1])} with the repository version? Export a backup first.`;
     for (const [vi, en] of [['Chưa lưu: ', 'Not saved: '], ['Chưa đăng xuất được: ', 'Could not log out: '], ['Chưa tải được bản mới: ', 'Could not load the update: '], ['Chưa lưu được lên Supabase: ', 'Could not save to Supabase: '], ['Chưa bật/tắt được tần số: ', 'Could not toggle the frequency: ']]) {
-      if (key.startsWith(vi)) return en + translate(key.slice(vi.length));
+      if (key.startsWith(vi)) return en + translate(key.slice(vi.length), target);
     }
     // Only known status formats, never arbitrary user content.
     return value.replace(/\[([^\]]+)\]/g, (match, category) => entries[category] ? `[${entries[category]}]` : match)
@@ -298,6 +318,7 @@ window.HoaiLanguage = (() => {
     });
     try { localStorage.setItem('HOAI_LANGUAGE', value); } catch { /* Keep the selection for this visit. */ }
     paint(document.body);
+    window.dispatchEvent(new CustomEvent('hoai-language-change', { detail: { language } }));
   }
 
   const observer = new MutationObserver(records => {
@@ -310,5 +331,5 @@ window.HoaiLanguage = (() => {
   observer.observe(document.body, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ['placeholder', 'aria-label', 'title', 'alt'] });
   const nativeConfirm = window.confirm.bind(window);
   window.confirm = message => nativeConfirm(translate(String(message)));
-  return { set, translate, get current() { return language; } };
+  return { set, translate, english: value => translate(value, 'en'), get current() { return language; } };
 })();
