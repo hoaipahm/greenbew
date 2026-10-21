@@ -1148,9 +1148,16 @@
           <div class="camera-location" id="cameraLocation">Căn phòng im lặng</div>
         </div>
         <div class="camera-controls"><span>QUAN SÁT / CHỜ TÍN HIỆU</span><button type="button" class="btn-sm" onclick="HoaiSurveillance.next()">ĐỔI CAMERA →</button></div>
-        <blockquote class="transmission-quote">“Nếu nghe thấy tên mình trên radio, đừng trả lời.”</blockquote>
-        <div class="signal-heading">NHẬT KÝ TÍN HIỆU</div>
-        <ol id="signalLog" class="signal-log" aria-label="Nhật ký tín hiệu hư cấu"></ol>
+        <div class="broadcast-banner" data-no-translate>
+          <div class="broadcast-meta"><span id="broadcastTime"></span><span>UTC+7 // VIETNAM</span></div>
+          <h4 id="broadcastHeadline"></h4>
+          <div class="bulletin-ticker"><p id="broadcastBulletin"></p></div>
+          <progress id="broadcastProgress" max="1" value="0" aria-label="Tiến trình khung phát"></progress>
+        </div>
+        <div class="broadcast-toolbar"><div class="signal-heading">LỊCH PHÁT 24 GIỜ</div><button type="button" class="btn-sm" data-owner hidden onclick="HoaiSurveillance.edit()">SỬA KHUNG ĐANG PHÁT</button></div>
+        <p class="helper-text">12 bản tin hư cấu • Mỗi khung 2 giờ • Lặp lại hằng ngày</p>
+        <p id="broadcastSetupNotice" class="helper-text" data-owner hidden></p>
+        <ol id="signalLog" class="signal-log broadcast-schedule" data-no-translate aria-label="Lịch bản tin hư cấu trong ngày"></ol>
       </aside>
       <div class="panel-box backup-panel" data-owner hidden>
         <h3 style="font-family:'VT323',monospace; font-size:1.65rem; color:var(--emerald); letter-spacing:1px;">
@@ -1173,6 +1180,23 @@
     </section>
 
   </main>
+
+  <dialog id="broadcastEditDialog" class="owner-login broadcast-editor" aria-labelledby="broadcastEditTitle">
+    <form onsubmit="HoaiSurveillance.save(event)">
+      <h2 id="broadcastEditTitle">CHỈNH SỬA LỊCH PHÁT</h2>
+      <label class="form-label" for="broadcastHour">Khung giờ (giờ Việt Nam)</label>
+      <select id="broadcastHour" class="form-select" onchange="HoaiSurveillance.changeEditorHour()"></select>
+      <div class="broadcast-editor-grid">
+        <div><label class="form-label" for="broadcastTitleVi">Tiêu đề tiếng Việt</label><input id="broadcastTitleVi" class="form-input" maxlength="160" required>
+        <label class="form-label" for="broadcastBodyVi">Bản tin tiếng Việt</label><textarea id="broadcastBodyVi" class="form-textarea" maxlength="2000" required></textarea></div>
+        <div><label class="form-label" for="broadcastTitleEn">English headline</label><input id="broadcastTitleEn" class="form-input" maxlength="160" required>
+        <label class="form-label" for="broadcastBodyEn">English bulletin</label><textarea id="broadcastBodyEn" class="form-textarea" maxlength="2000" required></textarea></div>
+      </div>
+      <p class="helper-text">Mỗi dòng là một thông điệp; các dòng tự luân phiên trong khung 2 giờ. Lịch lặp lại mỗi ngày.</p>
+      <p id="broadcastEditError" class="helper-text" role="status"></p>
+      <div class="gallery-edit-actions"><button id="broadcastSave" type="submit" class="write-cta-btn">LƯU LỊCH PHÁT</button><button id="broadcastCancel" type="button" class="btn-sm" onclick="HoaiSurveillance.closeEditor()">HỦY</button></div>
+    </form>
+  </dialog>
 
   <dialog id="galleryEditDialog" class="owner-login" aria-labelledby="galleryEditTitle">
     <form onsubmit="saveGalleryCaption(event)">
@@ -1215,6 +1239,7 @@
   <div class="toast" id="toastBox" role="status" aria-live="polite">Đã lưu vào lãnh địa của Hoài!</div>
 
   <script src="i18n.js"></script>
+  <script src="broadcast.js"></script>
   <script src="supabase-config.js"></script>
   <script src="supabase-client.js"></script>
   <script src="ui-sounds.js"></script>

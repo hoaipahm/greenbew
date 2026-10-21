@@ -424,6 +424,7 @@ function renderPosts() {
           <button data-owner ${canEdit() ? '' : 'hidden'} class="btn-sm btn-danger-sm" onclick="deletePost('${post.id}')">XÓA</button>
         </div></div></article>`).join('') : `<div class="empty-state">${appState.posts.length
       ? 'Không tìm thấy bài phù hợp. Hãy đổi bộ lọc hoặc từ khóa.' : 'Chưa có bài viết. Viết vài dòng đầu tiên của Hoài nhé.'}</div>`;
+  window.dispatchEvent(new Event('hoai-images-change'));
 }
 
 function renderGallery() {
@@ -435,6 +436,7 @@ function renderGallery() {
         <div class="gallery-caption-actions" data-owner ${canEdit() ? '' : 'hidden'}><button class="btn-sm" onclick="editGalleryCaption('${image.id}')">SỬA</button>
         <button class="btn-sm btn-danger-sm" onclick="deleteGalleryItem('${image.id}')">Xóa</button></div></div>
     </div>`).join('') : '<div class="empty-state">Kho ảnh đang trống. Thêm ảnh để giữ lại một khoảnh khắc.</div>';
+  window.dispatchEvent(new Event('hoai-images-change'));
 }
 
 function showReader(html) {

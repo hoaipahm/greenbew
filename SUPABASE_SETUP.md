@@ -71,6 +71,14 @@ Chưa có kiểm thử trên Supabase thật cho đến khi hoàn tất các bư
 
 ## Lưu trữ và sao lưu
 
+### Bật chỉnh sửa lịch bản tin
+
+Mở file `supabase/broadcast.sql`, sao chép toàn bộ vào **Supabase → SQL Editor → New query → Run**. Chỉ cần chạy một lần sau khi đã có chủ nhân từ `set-owner.sql`. File không sửa kho bài/ảnh; nó thêm bảng `hoai_broadcast`, RLS và hàm lưu có revision. Mỗi khung chẵn từ 0 đến 22 là một hàng, đọc công khai, chỉ chủ nhân được tạo/sửa.
+
+Sau khi báo Success, tải lại website, đăng nhập chủ nhân và chọn **Giám sát đêm → SỬA** ở khung muốn đổi. Nhập đủ hai bản Việt/Anh rồi lưu. Mở cửa sổ ẩn danh để kiểm tra nội dung mới sau tối đa 30 giây. Nếu chưa chạy SQL, web vẫn phát lịch mặc định nhưng sẽ thông báo cần thiết lập khi chủ nhân muốn lưu lịch riêng.
+
+Lịch nằm riêng trong `hoai_broadcast`, không có trong file JSON sao lưu bài/ảnh hiện tại. Sao lưu bảng lịch riêng từ dashboard. Quay về bản giao diện trước không cần xóa bảng mới; giữ bảng để không mất bản tin đã sửa.
+
 Đây là kho cá nhân nhỏ: tối đa 2.000 bài, 5.000 mục ảnh và 8 MiB nội dung JSON (chữ + URL), còn file ảnh nằm riêng trong Storage. Toàn bộ snapshot được lưu trong một transaction để giữ tương thích với giao diện hiện tại. Nếu kho lớn hơn, cần tách bảng/phân trang thay vì tăng kích thước vô hạn.
 
 Xóa mục ảnh khỏi giao diện không xóa file Storage vì file có thể còn được bài khác sử dụng. Ảnh upload xong nhưng lưu bài lỗi cũng có thể còn trong bucket. Chỉ dọn file không còn liên kết sau khi đã sao lưu.

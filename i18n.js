@@ -240,7 +240,31 @@ window.HoaiLanguage = (() => {
     'HỦY': 'CANCEL',
     'Đã lưu chú thích ảnh.': 'Image caption saved.',
     'Nhập đủ hai ngôn ngữ, mỗi ngôn ngữ tối đa 200 ký tự.': 'Enter both languages, up to 200 characters each.',
-    'Chưa lưu được. Nội dung vẫn được giữ để thử lại.': 'Could not save. Your text is preserved so you can retry.'
+    'Chưa lưu được. Nội dung vẫn được giữ để thử lại.': 'Could not save. Your text is preserved so you can retry.',
+    'LỊCH PHÁT 24 GIỜ': '24-HOUR BROADCAST SCHEDULE',
+    'SỬA KHUNG ĐANG PHÁT': 'EDIT CURRENT SLOT',
+    '12 bản tin hư cấu • Mỗi khung 2 giờ • Lặp lại hằng ngày': '12 fictional bulletins • Two-hour slots • Repeats daily',
+    'Lịch bản tin hư cấu trong ngày': 'Daily fictional bulletin schedule',
+    'Tiến trình khung phát': 'Broadcast slot progress',
+    'CHỈNH SỬA LỊCH PHÁT': 'EDIT BROADCAST SCHEDULE',
+    'Khung giờ (giờ Việt Nam)': 'Time slot (Vietnam time)',
+    'Tiêu đề tiếng Việt': 'Vietnamese headline',
+    'Bản tin tiếng Việt': 'Vietnamese bulletin',
+    'Mỗi dòng là một thông điệp; các dòng tự luân phiên trong khung 2 giờ. Lịch lặp lại mỗi ngày.': 'Each line is a message; lines rotate within the two-hour slot. The schedule repeats daily.',
+    'LƯU LỊCH PHÁT': 'SAVE BROADCAST',
+    'Đã lưu lịch phát.': 'Broadcast schedule saved.',
+    'Bỏ thay đổi chưa lưu để chuyển khung giờ?': 'Discard unsaved changes and switch time slots?',
+    'Khung giờ không hợp lệ.': 'Invalid time slot.',
+    'Nhập đủ nội dung Việt và Anh trong giới hạn cho phép.': 'Enter both Vietnamese and English content within the allowed limits.',
+    'Kho ảnh đang trống.': 'The image vault is empty.',
+    'Lịch phát không hợp lệ.': 'Invalid broadcast schedule.',
+    'Lịch đã thay đổi trên máy khác. Hãy mở lại khung giờ trước khi lưu.': 'The schedule changed on another device. Reopen the slot before saving.',
+    'Chưa tải được lịch chung. Chủ nhân cần chạy supabase/broadcast.sql trong SQL Editor.': 'Could not load the shared schedule. The owner must run supabase/broadcast.sql in the SQL Editor.',
+    'Chưa lưu được lịch chung. Kiểm tra quyền chủ nhân và chạy supabase/broadcast.sql.': 'Could not save the shared schedule. Check owner access and run supabase/broadcast.sql.',
+    'Chưa lưu được lịch. Nội dung vẫn được giữ; kiểm tra thông báo rồi thử lại.': 'Could not save the schedule. Your text is preserved; check the notification and retry.',
+    'Lịch mặc định đang phát. Để lưu lịch riêng, chạy supabase/broadcast.sql trong Supabase → SQL Editor.': 'The default schedule is playing. To save custom slots, run supabase/broadcast.sql in Supabase → SQL Editor.',
+    'Để lưu lịch riêng, chạy supabase/broadcast.sql trong Supabase → SQL Editor.': 'To save custom slots, run supabase/broadcast.sql in Supabase → SQL Editor.',
+    'Đang lưu lịch phát. Hãy chờ hoàn tất.': 'Saving the broadcast schedule. Please wait.'
   };
   const excluded = 'script,style,svg,[data-no-translate],#hoaiBio,.post-title,.post-excerpt,.reader-title:not([data-gallery-label]),.reader-body,input,textarea';
   const originals = new WeakMap();

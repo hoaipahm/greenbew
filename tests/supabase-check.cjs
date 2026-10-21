@@ -16,6 +16,7 @@ function check(name, actual, expected) { assert.deepEqual(actual, expected, name
 async function environment({ enabled = true, key = 'sb_publishable_test', importFailure = false } = {}) {
   let user = null, authListener, record = null, commitError = null, imports = 0, poll;
   const files = new Map();
+  const broadcasts = new Map();
   const window = new EventTarget();
   const document = new EventTarget();
   document.hidden = false;
@@ -33,6 +34,10 @@ async function environment({ enabled = true, key = 'sb_publishable_test', import
       signOut: async () => { user = null; authListener('SIGNED_OUT', null); return { error: null }; }
     },
     from: table => {
+      if (table === 'hoai_broadcast') return { select: () => ({ order: async field => {
+        assert.equal(field, 'hour');
+        return { data: structuredClone([...broadcasts.values()]), error: null };
+      } }) };
       assert.equal(table, 'hoai_site');
       return { select: () => ({ eq: (field, value) => {
         assert.equal(field, 'id'); assert.equal(value, 1);
@@ -53,6 +58,15 @@ async function environment({ enabled = true, key = 'sb_publishable_test', import
       };
     } },
     rpc: async (name, args) => {
+      if (name === 'hoai_save_broadcast') {
+        if (commitError) return { data: null, error: commitError };
+        if (user?.id !== ownerId) return { data: null, error: {code:'42501'} };
+        const current = broadcasts.get(args.p_hour);
+        if ((current?.revision || null) !== args.p_expected_revision) return {data:null,error:{code:'40001'}};
+        const revision = webcrypto.randomUUID();
+        broadcasts.set(args.p_hour, {hour:args.p_hour,title_vi:args.p_title_vi,title_en:args.p_title_en,body_vi:args.p_body_vi,body_en:args.p_body_en,revision});
+        return {data:revision,error:null};
+      }
       assert.equal(name, 'hoai_save');
       if (commitError) return { data: null, error: commitError };
       if (user?.id !== ownerId) return { data: null, error: { code: '42501', message: 'Owner only' } };
@@ -132,5 +146,17 @@ async function environment({ enabled = true, key = 'sb_publishable_test', import
   await assert.rejects(cloud.save({ ...saved, bio: 'x'.repeat(10001) }), /giới hạn/); passed++; console.log('PASS oversized profile rejected');
   const sql = fs.readFileSync(path.join(__dirname, '../supabase/setup.sql'), 'utf8');
   check('SQL includes RLS, explicit owner check and invoker CAS RPC', sql.includes('enable row level security') && sql.includes('auth.uid()') && sql.includes("errcode = '40001'") && sql.includes('security invoker'), true);
+  const slot = {hour:0,title_vi:'Nửa đêm',title_en:'Midnight',body_vi:'Dòng một',body_en:'Line one'};
+  check('broadcast public read starts with no overrides', (await cloud.loadBroadcast()).length, 0);
+  const slotRevision = await cloud.saveBroadcast(slot,null);
+  check('owner broadcast save uses separate table without changing archive', (await cloud.loadBroadcast())[0].title_en === 'Midnight' && test.record.revision === incoming, true);
+  await assert.rejects(cloud.saveBroadcast({...slot,title_en:'Stale'},null), /máy khác/); passed++; console.log('PASS stale broadcast revision rejected');
+  await assert.rejects(cloud.saveBroadcast({...slot,hour:3},slotRevision), /không hợp lệ/); passed++; console.log('PASS invalid broadcast hour rejected');
+  await assert.rejects(cloud.saveBroadcast({...slot,body_en:'x'.repeat(2001)},slotRevision), /giới hạn/); passed++; console.log('PASS oversized broadcast rejected');
+  await cloud.logout();
+  await assert.rejects(cloud.saveBroadcast(slot,slotRevision), /Chỉ chủ nhân/); passed++; console.log('PASS anonymous broadcast save rejected');
+  check('public broadcast read remains available after logout', (await cloud.loadBroadcast())[0].title_en, 'Midnight');
+  const broadcastSQL = fs.readFileSync(path.join(__dirname,'../supabase/broadcast.sql'),'utf8');
+  check('broadcast migration includes RLS and revision conflict protection', broadcastSQL.includes('enable row level security') && broadcastSQL.includes('private.hoai_is_owner()') && broadcastSQL.includes("errcode = '40001'") && broadcastSQL.includes('security invoker'), true);
   console.log(`Verified ${passed} Supabase adapter contract checks with test doubles. Live project and SQL policies not exercised.`);
 })().catch(error => { console.error(error); process.exitCode = 1; });

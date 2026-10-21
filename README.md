@@ -14,7 +14,8 @@ Một website cá nhân mang phong cách kinh dị CRT/VHS: màn hình xanh lụ
 - Nhật ký có tìm kiếm, lọc chuyên mục và chế độ đọc bài.
 - Kho ảnh với xem ảnh lớn, nén ảnh tải lên và quản lý dành riêng cho chủ nhân.
 - Đài nhạc: waveform, phổ âm, tua, âm lượng, tốc độ phát, nhạc lặp và synth nền.
-- Giám sát đêm: bốn góc camera từ ảnh có sẵn, đổi camera thủ công/tự động, đồng hồ và nhật ký tín hiệu hư cấu, đồng bộ VI / EN.
+- Giám sát đêm: luân phiên tất cả ảnh đại diện/bài viết/kho ảnh, bỏ ảnh trùng, tự nhận ảnh mới.
+- Lịch thời sự hư cấu gồm 12 khung hai giờ, 00:00–24:00 giờ Việt Nam; từng dòng bản tin tự luân phiên, lịch lặp mỗi ngày và có thể sửa Việt/Anh bởi chủ nhân.
 - Chủ nhân sửa chú thích từng ảnh bằng hai ô Việt/Anh; khách chỉ xem.
 - Supabase lưu bài và ảnh; Authentication, RLS và Storage policies kiểm soát quyền ghi.
 - GitHub Pages phục vụ giao diện; HTML, CSS và JavaScript thuần, không cần build.
@@ -55,6 +56,16 @@ Khi chưa kết nối Supabase, khách xem bài/ảnh có sẵn. Chỉ localhost
 
 ## Lưu trữ và quyền truy cập
 
+### Lịch phát 24 giờ
+
+Chạy thêm **[supabase/broadcast.sql](supabase/broadcast.sql)** một lần trong **Supabase → SQL Editor → Run**. Script chỉ thêm bảng lịch, quyền đọc công khai và hàm lưu dành cho chủ nhân; không thay đổi bài/ảnh. Lịch mặc định đủ 12 khung vẫn phát khi chưa chạy SQL, nhưng chỉnh sửa dùng chung sẽ báo lỗi rõ ràng thay vì âm thầm lưu trên máy.
+
+Đăng nhập chủ nhân → **Giám sát đêm → SỬA KHUNG ĐANG PHÁT**, hoặc **SỬA** cạnh khung bất kỳ. Nhập tiêu đề và nội dung Việt/Anh, mỗi dòng là một thông điệp. Tiêu đề tối đa 160 ký tự, nội dung tối đa 2.000 ký tự cho mỗi ngôn ngữ. Lưu xong, khách nhận bản mới trong khoảng 30 giây. Hai máy sửa cùng khung dùng revision để ngăn bản cũ ghi đè bản mới; sửa khung khác nhau không xung đột.
+
+Đồng hồ dùng `Asia/Ho_Chi_Minh` (UTC+7) cho mọi người, dù máy ở múi giờ khác. Các khung là 00:00–02:00 đến 22:00–24:00. Camera đổi mỗi 18 giây; từng dòng bản tin luân phiên mỗi 12 giây. Khi mở lại tab, bản tin khớp giờ hiện tại; không cần máy chủ chạy hẹn giờ riêng. Người dùng bật giảm chuyển động sẽ không bị tự đổi camera.
+
+Lịch riêng nằm trong `hoai_broadcast`, tách khỏi snapshot bài/ảnh. Bản sao lưu JSON của bài/ảnh không bao gồm bảng lịch; sao lưu riêng bảng này qua dashboard Supabase. Nếu quay lại mã cũ, giữ nguyên bảng lịch để bảo toàn dữ liệu, không cần xóa bảng.
+
 Để sửa chú thích ảnh: đăng nhập chủ nhân → **Kho ảnh → SỬA** dưới ảnh → nhập cả bản Việt và Anh → **LƯU CHÚ THÍCH**. Mỗi bản tối đa 200 ký tự. Đổi VI / EN sẽ hiện bản tương ứng trong kho và cửa sổ ảnh lớn. Hủy không thay đổi dữ liệu; nếu lưu lỗi, văn bản được giữ trong hộp sửa.
 
 Hai bản chú thích được đóng gói trong trường `title` có sẵn với tiền tố `@hoai-caption:`; ảnh cũ dùng chuỗi đơn vẫn được hỗ trợ. Không cần thay schema hay chạy lại SQL Supabase.
@@ -84,7 +95,7 @@ Trang thử tự phát MP3 khi mở và lặp lại khi hết. Nếu trình duy�
 
 ## GitHub Pages
 
-Đưa index.html, app.js, radio.js, access.js, ui-sounds.js, i18n.js, gallery-editor.js, surveillance.js, supabase-client.js, supabase-config.js, enhancements.css, assets/, data/ và .nojekyll lên repository.
+Đưa index.html, app.js, radio.js, access.js, ui-sounds.js, i18n.js, broadcast.js, gallery-editor.js, surveillance.js, supabase-client.js, supabase-config.js, enhancements.css, assets/, data/ và .nojekyll lên repository.
 
 Bật **Settings → Pages → Deploy from a branch → main → /(root)**. Không cần Firebase Hosting.
 
@@ -100,6 +111,7 @@ Chỉ để Project URL và publishable/anon key trong cấu hình Web. Không �
     node --check supabase-client.js
     node tests/browser-check.cjs
     node --experimental-vm-modules tests/supabase-check.cjs
+    node tests/broadcast-check.cjs
     python -m unittest discover -s tests -p test_serve.py
 
 Browser checks dùng Microsoft Edge mặc định Windows, project cloud bị tắt bằng fixture để không chạm dữ liệu thật; Google Fonts cũng bị chặn. Supabase checks dùng SDK mô phỏng, không thực thi SQL/RLS trên dịch vụ thật. Cần kiểm tra project thật sau khi bạn cung cấp cấu hình và chạy SQL.

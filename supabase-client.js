@@ -160,5 +160,30 @@ window.HoaiCloud = (() => {
     document.addEventListener('visibilitychange', () => { void check(); });
   }
 
-  return { state, ready, login, logout, load, save, watch, isImageUrl, draftKey };
+  async function loadBroadcast() {
+    await ready;
+    if (!client || state.error) throw state.error || new Error('Chưa kết nối project Supabase.');
+    const { data, error } = await client.from('hoai_broadcast').select('hour,title_vi,title_en,body_vi,body_en,revision').order('hour');
+    if (error) throw new Error('Chưa tải được lịch chung. Chủ nhân cần chạy supabase/broadcast.sql trong SQL Editor.');
+    return data;
+  }
+
+  async function saveBroadcast(slot, expectedRevision) {
+    await ready;
+    if (!client || !state.owner || state.error) throw new Error('Chỉ chủ nhân đã đăng nhập mới được lưu thay đổi.');
+    if (!Number.isInteger(slot.hour) || slot.hour < 0 || slot.hour > 22 || slot.hour % 2) throw new Error('Khung giờ không hợp lệ.');
+    for (const [key, limit] of [['title_vi',160],['title_en',160],['body_vi',2000],['body_en',2000]]) {
+      if (typeof slot[key] !== 'string' || !slot[key].trim() || slot[key].length > limit) throw new Error('Nhập đủ nội dung Việt và Anh trong giới hạn cho phép.');
+    }
+    const { data, error } = await client.rpc('hoai_save_broadcast', {
+      p_hour: slot.hour, p_title_vi: slot.title_vi, p_title_en: slot.title_en,
+      p_body_vi: slot.body_vi, p_body_en: slot.body_en, p_expected_revision: expectedRevision
+    });
+    if (error?.code === '40001') throw new Error('Lịch đã thay đổi trên máy khác. Hãy mở lại khung giờ trước khi lưu.');
+    if (error) throw new Error('Chưa lưu được lịch chung. Kiểm tra quyền chủ nhân và chạy supabase/broadcast.sql.');
+    if (typeof data !== 'string') throw new Error('Máy chủ chưa xác nhận bản lưu. Hãy tải bản mới để kiểm tra.');
+    return data;
+  }
+
+  return { state, ready, login, logout, load, save, watch, isImageUrl, draftKey, loadBroadcast, saveBroadcast };
 })();
